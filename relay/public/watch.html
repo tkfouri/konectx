@@ -53,7 +53,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        var JANELA=80, CONFIANCA=0.95, COOLDOWN=1500, INTERVALO=100, LIMIAR_MOVIMENTO=10;
+        var JANELA=80, CONFIANCA=0.98, COOLDOWN=4000, INTERVALO=500;
         var CLASSES=['direita','esquerda','repouso'];
         var model=null, buffer=[], emCooldown=false, socket=null, ultimaClass=0;
         var codigo=window.location.pathname.split('/').pop();
@@ -83,40 +83,39 @@
             }catch(e){elEstado.textContent='Erro: '+e.message.substring(0,30);elIcon.textContent='X'}
         }
 
-        function temMovimento(){
-            var amplitude=0;
-            for(var j=0;j<3;j++){
-                var min=Infinity,max=-Infinity;
-                for(var i=buffer.length-JANELA;i<buffer.length;i++){
-                    if(buffer[i][j]<min)min=buffer[i][j];
-                    if(buffer[i][j]>max)max=buffer[i][j];
-                }
-                if(max-min>amplitude)amplitude=max-min;
-            }
-            return amplitude;
-        }
-
         function classificar(){
             if(!model||emCooldown||buffer.length<JANELA)return;
-            var amp=temMovimento();
-            var ult=buffer[buffer.length-1];
-            if(amp<LIMIAR_MOVIMENTO){
-                elDebug.textContent='parado (amp:'+amp.toFixed(1)+') | X:'+ult[0].toFixed(1)+' Y:'+ult[1].toFixed(1)+' Z:'+ult[2].toFixed(1);
-                return;
+            var amp=0;
+            for(var j=0;j<3;j++){
+                var mn=Infinity,mx=-Infinity;
+                for(var i=buffer.length-JANELA;i<buffer.length;i++){
+                    if(buffer[i][j]<mn)mn=buffer[i][j];
+                    if(buffer[i][j]>mx)mx=buffer[i][j];
+                }
+                if(mx-mn>amp)amp=mx-mn;
             }
-            var entrada=tf.tensor3d([buffer.slice(-JANELA)]);
-            var saida=model.predict(entrada);
-            var prob=saida.dataSync();
-            entrada.dispose();
-            saida.dispose();
-            var max=Math.max.apply(null,prob);
-            var idx=Array.prototype.indexOf.call(prob,max);
-            var classe=CLASSES[idx];
-            elDebug.textContent='D:'+(prob[0]*100).toFixed(0)+' E:'+(prob[1]*100).toFixed(0)+' R:'+(prob[2]*100).toFixed(0)+' | amp:'+amp.toFixed(1);
-            if(max>CONFIANCA&&classe!=='repouso'){
-                socket.emit('gesto',classe);
-                mostrar(classe);
-                cooldown();
+            var ult=buffer[buffer.length-1];
+            var mx=0,my=0,mz=0;
+            for(var k=buffer.length-JANELA;k<buffer.length;k++){mx+=buffer[k][0];my+=buffer[k][1];mz+=buffer[k][2]}
+            mx/=JANELA;my/=JANELA;mz/=JANELA;
+            var janela=buffer.slice(-JANELA).map(function(v){return [v[0]-mx,v[1]-my,v[2]-mz]});
+            try{
+                var entrada=tf.tensor3d([janela]);
+                var saida=model.predict(entrada);
+                var prob=saida.dataSync();
+                entrada.dispose();
+                saida.dispose();
+                var max=Math.max.apply(null,prob);
+                var idx=Array.prototype.indexOf.call(prob,max);
+                var classe=CLASSES[idx];
+                elDebug.innerHTML='mean X:'+mx.toFixed(1)+' Y:'+my.toFixed(1)+' Z:'+mz.toFixed(1)+'<br>amp:'+amp.toFixed(1)+' | D:'+(prob[0]*100).toFixed(0)+' E:'+(prob[1]*100).toFixed(0)+' R:'+(prob[2]*100).toFixed(0);
+                if(max>CONFIANCA&&classe!=='repouso'){
+                    socket.emit('gesto',classe);
+                    mostrar(classe);
+                    cooldown();
+                }
+            }catch(err){
+                elDebug.innerHTML='ERR:'+err.message.substring(0,40)+'<br>X:'+ult[0].toFixed(1)+' Y:'+ult[1].toFixed(1)+' Z:'+ult[2].toFixed(1);
             }
         }
 

@@ -26,6 +26,7 @@ def carregar_dados():
 
     mapa = {c: i for i, c in enumerate(CLASSES)}
     X = np.array([d['features'] for d in dados], dtype=np.float32)
+    X = X - X.mean(axis=1, keepdims=True)
     y = np.array([mapa[d['label']] for d in dados])
 
     for c in CLASSES:
@@ -39,38 +40,9 @@ def criar_conv1d():
     return keras.Sequential([
         layers.Input(shape=(JANELA, 3)),
         layers.Conv1D(32, 5, activation='relu'),
-        layers.BatchNormalization(),
         layers.MaxPooling1D(2),
         layers.Conv1D(64, 3, activation='relu'),
-        layers.BatchNormalization(),
         layers.GlobalAveragePooling1D(),
-        layers.Dropout(0.4),
-        layers.Dense(32, activation='relu'),
-        layers.Dense(len(CLASSES), activation='softmax')
-    ])
-
-
-def criar_lstm():
-    return keras.Sequential([
-        layers.Input(shape=(JANELA, 3)),
-        layers.LSTM(64, return_sequences=True),
-        layers.Dropout(0.3),
-        layers.LSTM(32),
-        layers.Dropout(0.3),
-        layers.Dense(32, activation='relu'),
-        layers.Dense(len(CLASSES), activation='softmax')
-    ])
-
-
-def criar_hibrido():
-    return keras.Sequential([
-        layers.Input(shape=(JANELA, 3)),
-        layers.Conv1D(32, 5, activation='relu'),
-        layers.BatchNormalization(),
-        layers.MaxPooling1D(2),
-        layers.Conv1D(64, 3, activation='relu'),
-        layers.BatchNormalization(),
-        layers.LSTM(64),
         layers.Dropout(0.4),
         layers.Dense(32, activation='relu'),
         layers.Dense(len(CLASSES), activation='softmax')
@@ -124,7 +96,12 @@ def avaliar(modelo, X_val, y_val):
 
 def limpar_layer(layer):
     config = dict(layer['config'])
-    for f in ['module', 'registered_name', 'optional', 'sparse', 'ragged', 'build_config', 'compile_config', 'synchronized']:
+    keras3_fields = [
+        'module', 'registered_name', 'optional', 'sparse', 'ragged',
+        'build_config', 'compile_config', 'synchronized',
+        'quantization_config', 'keepdims', 'autocast',
+    ]
+    for f in keras3_fields:
         config.pop(f, None)
     if isinstance(config.get('dtype'), dict):
         d = config['dtype']
@@ -203,33 +180,18 @@ def main():
     X_train, X_val, y_train, y_val = carregar_dados()
     print(f'\nTreino: {len(X_train)} | Validacao: {len(X_val)}')
 
-    arquiteturas = {
-        'Conv1D': criar_conv1d,
-        'LSTM': criar_lstm,
-        'Conv1D+LSTM': criar_hibrido
-    }
-
-    melhor_acc = 0
-    melhor_modelo = None
-    melhor_nome = ''
-
-    for nome, criar_fn in arquiteturas.items():
-        modelo, val_acc = treinar_modelo(nome, criar_fn, X_train, y_train, X_val, y_val)
-        if val_acc > melhor_acc:
-            melhor_acc = val_acc
-            melhor_modelo = modelo
-            melhor_nome = nome
+    modelo, val_acc = treinar_modelo('Conv1D', criar_conv1d, X_train, y_train, X_val, y_val)
 
     print(f'\n{"=" * 50}')
-    print(f'VENCEDOR: {melhor_nome} com {melhor_acc * 100:.1f}% val_accuracy')
+    print(f'Conv1D treinado com {val_acc * 100:.1f}% val_accuracy')
     print('=' * 50)
 
-    avaliar(melhor_modelo, X_val, y_val)
+    avaliar(modelo, X_val, y_val)
 
-    melhor_modelo.save(KERAS_H5)
+    modelo.save(KERAS_H5)
     print(f'\nModelo Keras salvo em {KERAS_H5}')
 
-    exportar_tfjs(melhor_modelo, SAIDA)
+    exportar_tfjs(modelo, SAIDA)
     print(f'Modelo TF.js salvo em {SAIDA}/ (model.json + weights.bin)')
 
     print('\nDeploy no servidor:')
