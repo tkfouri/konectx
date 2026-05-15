@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Konectx — Sensor</title>
+    <style>
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{background:#000;color:#eee;font-family:'Inter',sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;text-align:center;padding:20px}
+        .tag{font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:#00ff88;margin-bottom:12px;font-family:monospace}
+        .status{font-size:0.8rem;color:#666;margin-bottom:20px}
+        .vals{font-family:monospace;font-size:0.9rem;color:#555;line-height:2}
+        .vals span{color:#00ff88;font-weight:bold}
+        .btn{background:#00ff88;color:#000;border:none;padding:16px 36px;font-size:1rem;font-weight:600;border-radius:50px;cursor:pointer;margin-bottom:16px}
+        .btn:disabled{background:#222;color:#555}
+    </style>
+</head>
+<body>
+    <div class="tag">Modo calibracao</div>
+    <button class="btn" id="btn">Iniciar sensores</button>
+    <div class="status" id="status">Conectando...</div>
+    <div class="vals" id="vals">
+        X: <span id="vx">-</span><br>
+        Y: <span id="vy">-</span><br>
+        Z: <span id="vz">-</span>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket=io();
+        var elStatus=document.getElementById('status');
+        var elBtn=document.getElementById('btn');
+        var vx=document.getElementById('vx'),vy=document.getElementById('vy'),vz=document.getElementById('vz');
+        socket.on('connect',function(){socket.emit('entrar-sala',{codigo:'CALIBRAR',tipo:'watch'});elStatus.textContent='Conectado. Aguardando PC...'});
+        socket.on('parceiro-conectou',function(){elStatus.textContent='PC conectado. Transmitindo...'});
+        socket.on('parceiro-desconectou',function(){elStatus.textContent='PC desconectou'});
+        socket.on('disconnect',function(){elStatus.textContent='Desconectado'});
+        async function iniciar(){
+            try{
+                if(typeof DeviceMotionEvent.requestPermission==='function'){var p=await DeviceMotionEvent.requestPermission();if(p!=='granted'){elStatus.textContent='Permissao negada';return}}
+                if('wakeLock' in navigator){navigator.wakeLock.request('screen').catch(function(){})}
+                window.addEventListener('devicemotion',function(e){
+                    var a=e.accelerationIncludingGravity;if(!a||a.x===null)return;
+                    var x=a.x.toFixed(2),y=a.y.toFixed(2),z=a.z.toFixed(2);
+                    vx.textContent=x;vy.textContent=y;vz.textContent=z;
+                    socket.emit('raw',{x:x,y:y,z:z});
+                });
+                elBtn.style.display='none';elStatus.textContent='Sensores ativos. Transmitindo...';
+            }catch(e){elStatus.textContent='Erro: '+e.message.substring(0,25)}
+        }
+        elBtn.addEventListener('click',iniciar);
+    </script>
+</body>
+</html>

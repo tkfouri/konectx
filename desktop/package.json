@@ -1,0 +1,30 @@
+{
+  "name": "konectx",
+  "version": "3.0.0",
+  "description": "Konectx — Controle por gestos",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "build": {
+    "appId": "com.konectx.app",
+    "productName": "Konectx",
+    "win": {
+      "target": "nsis",
+      "icon": "icon.ico"
+    },
+    "files": [
+      "main.js",
+      "ui.html",
+      "node_modules/**/*"
+    ]
+  },
+  "dependencies": {
+    "socket.io-client": "^4.8.3"
+  },
+  "devDependencies": {
+    "electron": "^41.0.2",
+    "electron-builder": "^25.1.8"
+  }
+}

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Konectx — Sala</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:#06060a;--surface:#0d0d14;--border:rgba(255,255,255,0.06);
+            --text:#e8e8ed;--text-mid:#8888a0;--text-dim:#4a4a5e;
+            --accent:#00e87b;--accent-dim:rgba(0,232,123,0.08);
+            --font:'Outfit',sans-serif;--mono:'JetBrains Mono',monospace;
+        }
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;overflow:hidden;user-select:none;-webkit-font-smoothing:antialiased}
+
+        .sala-tag{font-family:var(--mono);font-size:0.65rem;color:var(--accent);letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border:1px solid rgba(0,232,123,0.2);border-radius:100px;background:var(--accent-dim);margin-bottom:14px}
+        .estado{font-size:0.75rem;color:var(--text-dim);margin-bottom:16px;transition:color 0.3s}
+
+        #ring{width:130px;height:130px;border-radius:50%;background:var(--surface);border:2.5px solid var(--border);display:flex;align-items:center;justify-content:center;margin-bottom:16px;transition:all 0.3s ease;position:relative}
+        #ring.ativo{border-color:var(--accent);box-shadow:0 0 40px rgba(0,232,123,0.15)}
+        #ring.esquerda{border-color:#00b4d8;box-shadow:0 0 40px rgba(0,180,216,0.15)}
+        #ring.direita{border-color:#e040fb;box-shadow:0 0 40px rgba(224,64,251,0.15)}
+        #ring-icon{font-size:1.8rem;font-weight:700;font-family:var(--mono);color:var(--text-mid);transition:color 0.2s}
+        #ring.ativo #ring-icon{color:var(--accent)}
+        #ring.esquerda #ring-icon{color:#00b4d8}
+        #ring.direita #ring-icon{color:#e040fb}
+
+        #label{font-size:0.9rem;font-weight:600;color:var(--text-mid);margin-bottom:20px;letter-spacing:0.5px}
+
+        #btn-iniciar{
+            background:var(--accent);color:#06060a;border:none;padding:14px 36px;
+            font-size:0.9rem;font-weight:600;font-family:var(--font);border-radius:50px;
+            cursor:pointer;transition:all 0.25s;
+        }
+        #btn-iniciar:hover{filter:brightness(1.1);transform:translateY(-1px)}
+        #btn-iniciar:disabled{background:var(--surface);color:var(--text-dim);cursor:default;transform:none;filter:none;border:1px solid var(--border)}
+
+        .debug{font-family:var(--mono);font-size:1rem;color:var(--accent);margin-top:18px;opacity:1;letter-spacing:1px}
+    </style>
+</head>
+<body>
+
+    <div class="sala-tag" id="sala-tag">------</div>
+    <div class="estado" id="estado">Carregando modelo...</div>
+    <div id="ring"><span id="ring-icon">...</span></div>
+    <div id="label">Aguardando</div>
+    <button id="btn-iniciar" disabled>Iniciar</button>
+    <div class="debug" id="debug"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var JANELA=80, CONFIANCA=0.95, COOLDOWN=1500, INTERVALO=100, LIMIAR_MOVIMENTO=10;
+        var CLASSES=['direita','esquerda','repouso'];
+        var model=null, buffer=[], emCooldown=false, socket=null, ultimaClass=0;
+        var codigo=window.location.pathname.split('/').pop();
+
+        var elEstado=document.getElementById('estado');
+        var elRing=document.getElementById('ring');
+        var elIcon=document.getElementById('ring-icon');
+        var elLabel=document.getElementById('label');
+        var elBtn=document.getElementById('btn-iniciar');
+        var elDebug=document.getElementById('debug');
+        document.getElementById('sala-tag').textContent='SALA ' + codigo;
+
+        async function init(){
+            try{
+                model=await tf.loadLayersModel('/modelo/model.json');
+                elEstado.textContent='Modelo carregado';
+                socket=io();
+                socket.on('connect',function(){
+                    socket.emit('entrar-sala',{codigo:codigo,tipo:'watch'});
+                    elEstado.textContent='Conectado';
+                    elIcon.textContent='OK';
+                    elBtn.disabled=false;
+                });
+                socket.on('parceiro-conectou',function(){elEstado.textContent='PC pareado'; elEstado.style.color='var(--accent)'});
+                socket.on('parceiro-desconectou',function(){elEstado.textContent='PC desconectou'; elEstado.style.color='var(--text-dim)'});
+                socket.on('disconnect',function(){elEstado.textContent='Desconectado';elIcon.textContent='!';elRing.className=''});
+            }catch(e){elEstado.textContent='Erro: '+e.message.substring(0,30);elIcon.textContent='X'}
+        }
+
+        function temMovimento(){
+            var amplitude=0;
+            for(var j=0;j<3;j++){
+                var min=Infinity,max=-Infinity;
+                for(var i=buffer.length-JANELA;i<buffer.length;i++){
+                    if(buffer[i][j]<min)min=buffer[i][j];
+                    if(buffer[i][j]>max)max=buffer[i][j];
+                }
+                if(max-min>amplitude)amplitude=max-min;
+            }
+            return amplitude;
+        }
+
+        function classificar(){
+            if(!model||emCooldown||buffer.length<JANELA)return;
+            var amp=temMovimento();
+            var ult=buffer[buffer.length-1];
+            if(amp<LIMIAR_MOVIMENTO){
+                elDebug.textContent='parado (amp:'+amp.toFixed(1)+') | X:'+ult[0].toFixed(1)+' Y:'+ult[1].toFixed(1)+' Z:'+ult[2].toFixed(1);
+                return;
+            }
+            var entrada=tf.tensor3d([buffer.slice(-JANELA)]);
+            var saida=model.predict(entrada);
+            var prob=saida.dataSync();
+            entrada.dispose();
+            saida.dispose();
+            var max=Math.max.apply(null,prob);
+            var idx=Array.prototype.indexOf.call(prob,max);
+            var classe=CLASSES[idx];
+            elDebug.textContent='D:'+(prob[0]*100).toFixed(0)+' E:'+(prob[1]*100).toFixed(0)+' R:'+(prob[2]*100).toFixed(0)+' | amp:'+amp.toFixed(1);
+            if(max>CONFIANCA&&classe!=='repouso'){
+                socket.emit('gesto',classe);
+                mostrar(classe);
+                cooldown();
+            }
+        }
+
+        function mostrar(c){
+            elRing.className=c;
+            elIcon.textContent=c==='direita'?'>>':'<<';
+            elLabel.textContent=c==='direita'?'Avancar':'Voltar';
+            setTimeout(function(){
+                elRing.className='ativo';
+                elIcon.textContent='';
+                elLabel.textContent='Monitorando';
+            },1000);
+        }
+
+        function cooldown(){emCooldown=true;buffer=[];setTimeout(function(){emCooldown=false},COOLDOWN)}
+
+        async function iniciar(){
+            try{
+                if(typeof DeviceMotionEvent.requestPermission==='function'){
+                    var p=await DeviceMotionEvent.requestPermission();
+                    if(p!=='granted'){elEstado.textContent='Permissao negada';return}
+                }
+                if('wakeLock' in navigator){navigator.wakeLock.request('screen').catch(function(){})}
+                window.addEventListener('devicemotion',function(e){
+                    var a=e.accelerationIncludingGravity;
+                    if(!a||a.x===null)return;
+                    buffer.push([a.x,a.y,a.z]);
+                    while(buffer.length>JANELA)buffer.shift();
+                    var agora=Date.now();
+                    if(agora-ultimaClass>INTERVALO){
+                        ultimaClass=agora;
+                        classificar();
+                    }
+                });
+                elBtn.style.display='none';
+                elRing.className='ativo';
+                elIcon.textContent='';
+                elLabel.textContent='Monitorando';
+                elEstado.textContent='Sensores ativos';
+            }catch(e){elEstado.textContent='Erro: '+e.message.substring(0,25)}
+        }
+
+        elBtn.addEventListener('click',iniciar);
+        init();
+    </script>
+</body>
+</html>
