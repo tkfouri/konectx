@@ -15,11 +15,8 @@ __pycache__/
 *.pyo
 *.pyd
 
-# Backups e datasets grandes
+# Backups
 *.bak
-*.h5
-modelo_keras/
-modelo_tfjs/
 
 # Logs
 *.log
