@@ -122,7 +122,7 @@
         function mostrar(c){
             elRing.className=c;
             elIcon.textContent=c==='direita'?'>>':'<<';
-            elLabel.textContent=c==='direita'?'Avancar':'Voltar';
+            elLabel.textContent=c==='direita'?'Avançar':'Voltar';
             setTimeout(function(){
                 elRing.className='ativo';
                 elIcon.textContent='';
@@ -136,7 +136,7 @@
             try{
                 if(typeof DeviceMotionEvent.requestPermission==='function'){
                     var p=await DeviceMotionEvent.requestPermission();
-                    if(p!=='granted'){elEstado.textContent='Permissao negada';return}
+                    if(p!=='granted'){elEstado.textContent='Permissão negada';return}
                 }
                 if('wakeLock' in navigator){navigator.wakeLock.request('screen').catch(function(){})}
                 window.addEventListener('devicemotion',function(e){

@@ -5,127 +5,168 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Konectx</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --black:#050505;--card:#0f0f0f;--line:rgba(255,255,255,0.07);--line-h:rgba(255,255,255,0.14);
-            --white:#f0f0f0;--gray:#666;--dim:#333;
-            --green:#00ff88;--green2:#00cc6a;--green-glow:rgba(0,255,136,0.06);
-            --display:'Syne',sans-serif;--body:'Space Grotesk',sans-serif;--mono:'JetBrains Mono',monospace;
+        :root{
+            --black:#0a0a0a;
+            --surface:#111;
+            --line:rgba(255,255,255,0.06);
+            --line-strong:rgba(255,255,255,0.12);
+            --text:#f5f5f5;
+            --text-mid:#888;
+            --text-dim:#555;
+            --accent:#00e87b;
+            --font:'Inter',system-ui,sans-serif;
+            --mono:'JetBrains Mono',monospace;
         }
-        *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
-        body{background:var(--black);color:var(--white);font-family:var(--body);overflow-x:hidden;-webkit-font-smoothing:antialiased}
-        .noise{position:fixed;inset:0;z-index:10000;pointer-events:none;opacity:0.03;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-        nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:24px 48px;mix-blend-mode:difference}
-        .nav-mark{font-family:var(--display);font-weight:800;font-size:1.1rem;letter-spacing:-0.5px;color:var(--white)}.nav-mark span{color:var(--green)}
-        .nav-links{display:flex;gap:32px}.nav-links a{font-family:var(--mono);font-size:0.65rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--white);text-decoration:none;opacity:0.5;transition:opacity 0.3s}.nav-links a:hover{opacity:1}
-        .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:140px 32px 80px;position:relative;overflow:hidden}
-        .hero-glow{position:absolute;width:800px;height:800px;border-radius:50%;background:radial-gradient(circle,rgba(0,255,136,0.07) 0%,transparent 65%);top:-300px;left:50%;transform:translateX(-50%);filter:blur(60px);pointer-events:none;animation:breathe 8s ease-in-out infinite}
-        @keyframes breathe{0%,100%{opacity:0.6;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.15)}}
-        .hero-tag{font-family:var(--mono);font-size:1.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--green);margin-bottom:32px;opacity:0;animation:slideUp 1s ease 0.2s forwards}
-        .hero-title{font-family:var(--display);font-weight:800;font-size:clamp(3rem,9vw,7rem);line-height:0.95;letter-spacing:-3px;text-align:center;max-width:900px;margin-bottom:28px;opacity:0;animation:slideUp 1s ease 0.4s forwards}
-        .hero-title .accent{background:linear-gradient(135deg,var(--green),#00b4d8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .hero-sub{font-size:1rem;color:var(--gray);max-width:420px;text-align:center;line-height:1.8;font-weight:300;margin-bottom:48px;opacity:0;animation:slideUp 1s ease 0.6s forwards}
-        .sala-box{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:36px 32px;width:90%;max-width:400px;text-align:center;opacity:0;animation:slideUp 1s ease 0.8s forwards;transition:border-color 0.3s}
-        .sala-box:focus-within{border-color:rgba(0,255,136,0.3)}
-        .sala-label{font-family:var(--mono);font-size:0.55rem;letter-spacing:3px;text-transform:uppercase;color:var(--dim);margin-bottom:20px}
-        .sala-input{width:100%;padding:18px;font-size:2rem;font-family:var(--mono);font-weight:700;text-align:center;letter-spacing:14px;text-transform:uppercase;background:var(--black);border:1.5px solid var(--line);border-radius:14px;color:var(--white);outline:none;transition:border-color 0.3s}
-        .sala-input:focus{border-color:var(--green)}
-        .sala-input::placeholder{font-size:0.85rem;letter-spacing:4px;color:var(--dim);font-weight:400}
-        .sala-btn{width:100%;margin-top:16px;padding:16px;font-size:0.85rem;font-weight:600;font-family:var(--body);border:none;border-radius:14px;cursor:pointer;transition:all 0.3s;background:var(--green);color:var(--black);text-transform:uppercase;letter-spacing:1px}
-        .sala-btn:hover{background:var(--green2);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,255,136,0.15)}
-        .sala-btn:disabled{background:var(--card);color:var(--dim);cursor:default;transform:none;box-shadow:none;border:1px solid var(--line)}
-        .sala-erro{color:#ff3355;font-size:0.7rem;margin-top:10px;min-height:16px}
-        .divider{width:1px;height:80px;margin:0 auto;background:linear-gradient(to bottom,var(--green),transparent);opacity:0;animation:slideUp 1s ease 1s forwards}
-        .section{padding:120px 48px;max-width:1100px;margin:0 auto}
-        .section-num{font-family:var(--mono);font-size:1.0rem;letter-spacing:3px;text-transform:uppercase;color:var(--green);margin-bottom:20px;display:flex;align-items:center;gap:12px}
-        .section-num::after{content:'';flex:1;height:1px;background:var(--line)}
-        .section-title{font-family:var(--display);font-weight:800;font-size:clamp(2rem,5vw,3.5rem);letter-spacing:-2px;line-height:1.05;margin-bottom:20px}
-        .section-body{font-size:1rem;color:var(--gray);line-height:1.9;max-width:560px;font-weight:300}
-        .services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:48px;border-radius:20px;overflow:hidden}
-        .service-item{background:var(--card);padding:36px 28px;transition:background 0.3s;position:relative;cursor:default}
-        .service-item:hover{background:#141414}
-        .service-item::before{content:'';position:absolute;top:0;left:28px;right:28px;height:1px;background:var(--green);opacity:0;transition:opacity 0.3s}
-        .service-item:hover::before{opacity:1}
-        .service-num{font-family:var(--mono);font-size:0.55rem;color:var(--dim);letter-spacing:2px;margin-bottom:16px}
-        .service-item h3{font-family:var(--display);font-size:1.15rem;font-weight:700;margin-bottom:10px;letter-spacing:-0.5px}
-        .service-item p{font-size:0.82rem;color:var(--gray);line-height:1.7;font-weight:300}
-        .big-quote{padding:160px 48px;text-align:center;max-width:1100px;margin:0 auto}
-        .big-quote-text{font-family:var(--display);font-weight:800;font-size:clamp(1.8rem,4.5vw,3.2rem);letter-spacing:-1.5px;line-height:1.15;max-width:750px;margin:0 auto}
-        .big-quote-text .accent{background:linear-gradient(135deg,var(--green),#00b4d8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .big-quote-label{font-family:var(--mono);font-size:1.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--green);margin-bottom:24px}
-        .pillars{padding:120px 48px;max-width:1100px;margin:0 auto}
-        .pillar-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:48px;border-radius:20px;overflow:hidden}
-        .pillar{background:var(--card);padding:44px 36px;border-left:2px solid transparent;transition:all 0.3s}
-        .pillar:hover{border-left-color:var(--green);background:#0d0d0d}
-        .pillar h4{font-family:var(--mono);font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--green);margin-bottom:14px}
-        .pillar p{font-size:0.92rem;color:var(--gray);line-height:1.8;font-weight:300}
-        .strip{padding:32px 48px;display:flex;justify-content:center;gap:48px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-        .strip-item{font-family:var(--mono);font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--dim)}
-        .strip-item span{color:var(--green);font-weight:700}
-        footer{padding:48px;display:flex;align-items:center;justify-content:space-between}
-        .foot-mark{font-family:var(--display);font-weight:800;font-size:0.9rem}.foot-mark span{color:var(--green)}
-        .foot-copy{font-size:0.65rem;color:var(--dim);font-family:var(--mono);letter-spacing:1px}
-        @keyframes slideUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
-        .reveal{opacity:0;transform:translateY(40px);transition:all 0.8s cubic-bezier(0.16,1,0.3,1)}.reveal.visible{opacity:1;transform:translateY(0)}
-        @media(max-width:768px){nav{padding:20px 24px}.nav-links{gap:20px}.section{padding:80px 24px}.services-grid{grid-template-columns:1fr}.pillar-grid{grid-template-columns:1fr}.hero{padding:120px 20px 60px}.sala-box{padding:28px 20px}.sala-input{font-size:1.5rem;letter-spacing:8px}.big-quote{padding:100px 24px}.pillars{padding:80px 24px}.strip{flex-wrap:wrap;gap:20px;padding:24px}footer{flex-direction:column;gap:12px;text-align:center;padding:32px 24px}}
+        *{box-sizing:border-box;margin:0;padding:0}
+        html{scroll-behavior:smooth}
+        body{background:var(--black);color:var(--text);font-family:var(--font);font-weight:400;line-height:1.6;-webkit-font-smoothing:antialiased}
+        a{color:inherit;text-decoration:none}
+
+        nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:24px 40px;background:rgba(10,10,10,0.6);backdrop-filter:blur(8px)}
+        .nav-mark{font-weight:600;font-size:0.95rem;letter-spacing:-0.3px}
+        .nav-mark span{color:var(--accent)}
+        .nav-links{display:flex;gap:28px}
+        .nav-links a{font-family:var(--mono);font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;color:var(--text-mid);transition:color 0.2s}
+        .nav-links a:hover{color:var(--text)}
+
+        .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:120px 24px 80px;text-align:center}
+        .hero-tag{font-family:var(--mono);font-size:0.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:32px}
+        .hero-title{font-weight:600;font-size:clamp(2.4rem,6vw,4.4rem);line-height:1.05;letter-spacing:-0.03em;max-width:780px;margin-bottom:24px}
+        .hero-title .accent{color:var(--accent)}
+        .hero-sub{font-size:1rem;color:var(--text-mid);max-width:460px;line-height:1.7;margin-bottom:56px;font-weight:400}
+
+        .sala-box{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:28px 24px;width:100%;max-width:380px}
+        .sala-label{font-family:var(--mono);font-size:0.65rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:16px}
+        .sala-input{width:100%;padding:14px;font-size:1.6rem;font-family:var(--mono);font-weight:600;text-align:center;letter-spacing:8px;text-transform:uppercase;background:transparent;border:1px solid var(--line);border-radius:10px;color:var(--text);outline:none;transition:border-color 0.2s}
+        .sala-input:focus{border-color:var(--accent)}
+        .sala-input::placeholder{color:var(--text-dim);font-weight:400;letter-spacing:6px}
+        .sala-btn{width:100%;margin-top:12px;padding:14px;font-size:0.85rem;font-weight:500;font-family:var(--font);border:none;border-radius:10px;cursor:pointer;background:var(--accent);color:var(--black);letter-spacing:0.5px;transition:filter 0.2s}
+        .sala-btn:hover{filter:brightness(1.1)}
+        .sala-btn:disabled{background:transparent;color:var(--text-dim);cursor:default;filter:none;border:1px solid var(--line)}
+        .sala-erro{color:#ff4466;font-size:0.75rem;margin-top:10px;min-height:16px}
+
+        .section{padding:120px 40px;max-width:980px;margin:0 auto}
+        .section-num{font-family:var(--mono);font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:24px}
+        .section-title{font-weight:600;font-size:clamp(1.8rem,4vw,2.8rem);letter-spacing:-0.02em;line-height:1.15;margin-bottom:20px;max-width:680px}
+        .section-body{font-size:1rem;color:var(--text-mid);line-height:1.75;max-width:580px;font-weight:400}
+
+        .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-top:48px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+        .card{background:var(--black);padding:32px 26px;transition:background 0.2s}
+        .card:hover{background:#0f0f0f}
+        .card-num{font-family:var(--mono);font-size:0.6rem;color:var(--text-dim);letter-spacing:1.5px;margin-bottom:14px}
+        .card h3{font-weight:600;font-size:1.05rem;letter-spacing:-0.01em;margin-bottom:10px}
+        .card p{font-size:0.88rem;color:var(--text-mid);line-height:1.7;font-weight:400}
+
+        .quote{padding:120px 40px;text-align:center;max-width:880px;margin:0 auto}
+        .quote-label{font-family:var(--mono);font-size:0.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:24px}
+        .quote-text{font-weight:500;font-size:clamp(1.4rem,3.2vw,2.2rem);letter-spacing:-0.02em;line-height:1.3;max-width:720px;margin:0 auto;color:var(--text)}
+        .quote-text .accent{color:var(--accent)}
+
+        .strip{padding:28px 40px;display:flex;justify-content:center;flex-wrap:wrap;gap:48px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+        .strip-item{font-family:var(--mono);font-size:0.7rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim)}
+        .strip-item span{color:var(--accent);font-weight:500;margin-right:6px}
+
+        .pillars{padding:120px 40px;max-width:980px;margin:0 auto}
+        .pillar-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;margin-top:48px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+        .pillar{background:var(--black);padding:36px 32px;transition:background 0.2s}
+        .pillar:hover{background:#0f0f0f}
+        .pillar h4{font-family:var(--mono);font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+        .pillar p{font-size:0.95rem;color:var(--text-mid);line-height:1.75;font-weight:400}
+
+        footer{padding:48px 40px;display:flex;align-items:center;justify-content:space-between;gap:16px;border-top:1px solid var(--line)}
+        .foot-mark{font-weight:600;font-size:0.9rem}
+        .foot-mark span{color:var(--accent)}
+        .foot-copy{font-family:var(--mono);font-size:0.7rem;color:var(--text-dim);letter-spacing:1px}
+
+        .reveal{opacity:0;transform:translateY(20px);transition:opacity 0.7s ease,transform 0.7s ease}
+        .reveal.visible{opacity:1;transform:translateY(0)}
+
+        @media(max-width:768px){
+            nav{padding:18px 22px}
+            .nav-links{gap:16px}
+            .section,.pillars{padding:80px 22px}
+            .grid,.pillar-grid{grid-template-columns:1fr}
+            .hero{padding:100px 22px 60px}
+            .quote{padding:80px 22px}
+            .strip{flex-direction:column;gap:14px;align-items:center;padding:22px}
+            footer{flex-direction:column;text-align:center;padding:32px 22px}
+        }
     </style>
 </head>
 <body>
-<div class="noise"></div>
-<nav><div class="nav-mark">konect<span>x</span></div><div class="nav-links"><a href="#sobre">Sobre</a><a href="#missao">Missao</a><a href="#valores">Valores</a></div></nav>
+<nav>
+    <div class="nav-mark">konect<span>x</span></div>
+    <div class="nav-links">
+        <a href="#sobre">Sobre</a>
+        <a href="#missao">Missão</a>
+        <a href="#valores">Valores</a>
+    </div>
+</nav>
+
 <section class="hero">
-    <div class="hero-glow"></div>
-    <div class="hero-tag">Inteligencia artificial aplicada</div>
-    <h1 class="hero-title">A tecnologia<br>trabalha <span class="accent">por voce</span></h1>
-    <p class="hero-sub">Sistemas inteligentes que eliminam o atrito entre pessoas e tecnologia. Sem complicacao. Sem custo desnecessario.</p>
+    <div class="hero-tag">Inteligência artificial aplicada</div>
+    <h1 class="hero-title">A tecnologia trabalha <span class="accent">por você</span></h1>
+    <p class="hero-sub">Sistemas inteligentes que eliminam o atrito entre pessoas e tecnologia. Sem complicação. Sem custo desnecessário.</p>
     <div class="sala-box">
         <div class="sala-label">Entrar em uma sala</div>
         <input class="sala-input" id="code" placeholder="ABC123" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false">
         <button class="sala-btn" id="btn" disabled>Conectar</button>
         <div class="sala-erro" id="erro"></div>
     </div>
-    <div class="divider"></div>
 </section>
+
 <section class="section reveal" id="sobre">
     <div class="section-num">01 — Sobre</div>
-    <h2 class="section-title">Solucoes que voce usa.<br>Nao que voce configura.</h2>
-    <p class="section-body">A Konectx e uma empresa de inteligencia artificial aplicada. Desenvolvemos produtos proprios e solucoes sob medida para empresas e profissionais que precisam de tecnologia que funciona — e desaparece.</p>
-    <div class="services-grid">
-        <div class="service-item"><div class="service-num">001</div><h3>Automacao</h3><p>Sistemas que aprendem e executam tarefas repetitivas, liberando pessoas para o que realmente importa.</p></div>
-        <div class="service-item"><div class="service-num">002</div><h3>Visao computacional</h3><p>Deteccao e analise visual em tempo real. Seguranca industrial, agro e controle de qualidade.</p></div>
-        <div class="service-item"><div class="service-num">003</div><h3>Interfaces naturais</h3><p>Interacao entre humanos e maquinas por gestos, voz e sensores. Sem friccao. Sem botoes.</p></div>
+    <h2 class="section-title">Soluções que você usa. Não que você configura.</h2>
+    <p class="section-body">A Konectx é uma empresa de inteligência artificial aplicada. Desenvolvemos produtos próprios e soluções sob medida para empresas e profissionais que precisam de tecnologia que funciona — e desaparece.</p>
+    <div class="grid">
+        <div class="card"><div class="card-num">001</div><h3>Automação</h3><p>Sistemas que aprendem e executam tarefas repetitivas, liberando pessoas para o que realmente importa.</p></div>
+        <div class="card"><div class="card-num">002</div><h3>Visão computacional</h3><p>Detecção e análise visual em tempo real. Segurança industrial, agro e controle de qualidade.</p></div>
+        <div class="card"><div class="card-num">003</div><h3>Interfaces naturais</h3><p>Interação entre humanos e máquinas por gestos, voz e sensores. Sem fricção. Sem botões.</p></div>
     </div>
 </section>
-<div class="big-quote reveal" id="missao">
-    <div class="big-quote-label">Missao</div>
-    <p class="big-quote-text">Devolver o seu foco para o que realmente importa. Nos cuidamos para que a tecnologia ao seu redor <span class="accent">trabalhe por voce.</span></p>
+
+<div class="quote reveal" id="missao">
+    <div class="quote-label">Missão</div>
+    <p class="quote-text">Devolver o seu foco para o que realmente importa. Nós cuidamos para que a tecnologia ao seu redor <span class="accent">trabalhe por você.</span></p>
 </div>
+
 <div class="strip reveal">
-    <div class="strip-item"><span>R$ 0</span> custo operacao</div>
-    <div class="strip-item"><span>100%</span> open source stack</div>
-    <div class="strip-item"><span>0 dados</span> na nuvem</div>
-    <div class="strip-item"><span>Edge</span> inferencia local</div>
+    <div class="strip-item"><span>R$ 0</span>custo operação</div>
+    <div class="strip-item"><span>100%</span>open source stack</div>
+    <div class="strip-item"><span>0 dados</span>na nuvem</div>
+    <div class="strip-item"><span>Edge</span>inferência local</div>
 </div>
-<div class="big-quote reveal">
-    <div class="big-quote-label">Visao</div>
-    <p class="big-quote-text">Ser referencia nacional em inteligencia artificial aplicada, tornando automacao e sistemas inteligentes <span class="accent">acessiveis a qualquer profissional.</span></p>
+
+<div class="quote reveal">
+    <div class="quote-label">Visão</div>
+    <p class="quote-text">Ser referência nacional em inteligência artificial aplicada, tornando automação e sistemas inteligentes <span class="accent">acessíveis a qualquer profissional.</span></p>
 </div>
-<div class="big-quote reveal">
-    <div class="big-quote-label">Proposito</div>
-    <p class="big-quote-text">Fazer a tecnologia trabalhar para as pessoas — <span class="accent">e nao as pessoas para a tecnologia.</span></p>
+
+<div class="quote reveal">
+    <div class="quote-label">Propósito</div>
+    <p class="quote-text">Fazer a tecnologia trabalhar para as pessoas — <span class="accent">e não as pessoas para a tecnologia.</span></p>
 </div>
+
 <section class="pillars reveal" id="valores">
     <div class="section-num">02 — Valores</div>
     <h2 class="section-title">No que acreditamos</h2>
     <div class="pillar-grid">
-        <div class="pillar"><h4>Simplicidade</h4><p>Se voce precisou de um manual, nos falhamos. Se o usuario travou, o problema e nosso, nao dele.</p></div>
-        <div class="pillar"><h4>Acessibilidade</h4><p>Tecnologia que cabe no bolso de quem precisa. Se so quem pode pagar tem acesso, ainda nao esta pronta.</p></div>
-        <div class="pillar"><h4>Proposito antes da tecnica</h4><p>Nao criamos IA para impressionar. Criamos para resolver. Se uma solucao simples resolve, solucao simples e a resposta.</p></div>
-        <div class="pillar"><h4>O palco e de quem usa</h4><p>A Konectx nao aparece na apresentacao do professor. Se o produto some durante o uso, fizemos certo.</p></div>
+        <div class="pillar"><h4>Simplicidade</h4><p>Se você precisou de um manual, nós falhamos. Se o usuário travou, o problema é nosso, não dele.</p></div>
+        <div class="pillar"><h4>Acessibilidade</h4><p>Tecnologia que cabe no bolso de quem precisa. Se só quem pode pagar tem acesso, ainda não está pronta.</p></div>
+        <div class="pillar"><h4>Propósito antes da técnica</h4><p>Não criamos IA para impressionar. Criamos para resolver. Se uma solução simples resolve, solução simples é a resposta.</p></div>
+        <div class="pillar"><h4>O palco é de quem usa</h4><p>A Konectx não aparece na apresentação do professor. Se o produto some durante o uso, fizemos certo.</p></div>
     </div>
 </section>
-<footer><div class="foot-mark">konect<span>x</span></div><div class="foot-copy">2026 — Inteligencia artificial aplicada</div></footer>
+
+<footer>
+    <div class="foot-mark">konect<span>x</span></div>
+    <div class="foot-copy">2026 — Inteligência artificial aplicada</div>
+</footer>
+
 <script>
 var input=document.getElementById('code'),btn=document.getElementById('btn');
 input.addEventListener('input',function(){this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');btn.disabled=this.value.length!==6});

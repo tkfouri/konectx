@@ -16,7 +16,7 @@
     </style>
 </head>
 <body>
-    <div class="tag">Modo calibracao</div>
+    <div class="tag">Modo calibração</div>
     <button class="btn" id="btn">Iniciar sensores</button>
     <div class="status" id="status">Conectando...</div>
     <div class="vals" id="vals">
@@ -36,7 +36,7 @@
         socket.on('disconnect',function(){elStatus.textContent='Desconectado'});
         async function iniciar(){
             try{
-                if(typeof DeviceMotionEvent.requestPermission==='function'){var p=await DeviceMotionEvent.requestPermission();if(p!=='granted'){elStatus.textContent='Permissao negada';return}}
+                if(typeof DeviceMotionEvent.requestPermission==='function'){var p=await DeviceMotionEvent.requestPermission();if(p!=='granted'){elStatus.textContent='Permissão negada';return}}
                 if('wakeLock' in navigator){navigator.wakeLock.request('screen').catch(function(){})}
                 window.addEventListener('devicemotion',function(e){
                     var a=e.accelerationIncludingGravity;if(!a||a.x===null)return;
