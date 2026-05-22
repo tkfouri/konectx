@@ -53,7 +53,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        var JANELA=80, CONFIANCA=0.85, COOLDOWN=4000, INTERVALO=500;
+        var JANELA=80, CONFIANCA=0.92, COOLDOWN=4000, INTERVALO=500, AMP_MIN=14;
         var CLASSES=['direita','esquerda','repouso'];
         var model=null, buffer=[], emCooldown=false, socket=null, ultimaClass=0;
         var codigo=window.location.pathname.split('/').pop();
@@ -95,6 +95,10 @@
                 if(mx-mn>amp)amp=mx-mn;
             }
             var ult=buffer[buffer.length-1];
+            if(amp<AMP_MIN){
+                elDebug.innerHTML='X:'+ult[0].toFixed(1)+' Y:'+ult[1].toFixed(1)+' Z:'+ult[2].toFixed(1)+'<br>amp:'+amp.toFixed(1)+' (parado)';
+                return;
+            }
             var primeiro=buffer[buffer.length-JANELA];
             var janela=buffer.slice(-JANELA).map(function(v){return [v[0]-primeiro[0],v[1]-primeiro[1],v[2]-primeiro[2]]});
             try{
