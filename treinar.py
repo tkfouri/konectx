@@ -17,6 +17,9 @@ SAIDA = 'modelo_tfjs'
 KERAS_H5 = 'modelo_keras.h5'
 
 
+EIXOS = 2
+
+
 def carregar_dados():
     with open(DATASET) as f:
         raw = json.load(f)
@@ -26,6 +29,7 @@ def carregar_dados():
 
     mapa = {c: i for i, c in enumerate(CLASSES)}
     X = np.array([d['features'] for d in dados], dtype=np.float32)
+    X = X[:, :, :EIXOS]
     y = np.array([mapa[d['label']] for d in dados])
 
     for c in CLASSES:
@@ -35,18 +39,13 @@ def carregar_dados():
     return train_test_split(X, y_cat, test_size=0.2, random_state=42, stratify=y)
 
 
-def matriz_rotacao(rx, ry, rz):
-    cx, sx = np.cos(rx), np.sin(rx)
-    cy, sy = np.cos(ry), np.sin(ry)
-    cz, sz = np.cos(rz), np.sin(rz)
-    Rx = np.array([[1, 0, 0], [0, cx, -sx], [0, sx, cx]])
-    Ry = np.array([[cy, 0, sy], [0, 1, 0], [-sy, 0, cy]])
-    Rz = np.array([[cz, -sz, 0], [sz, cz, 0], [0, 0, 1]])
-    return Rz @ Ry @ Rx
-
-
 def deltas(X):
     return X - X[:, 0:1, :]
+
+
+def matriz_rotacao_2d(theta):
+    c, s = np.cos(theta), np.sin(theta)
+    return np.array([[c, -s], [s, c]], dtype=np.float32)
 
 
 def augmentar(X, y, fator=4):
@@ -57,8 +56,8 @@ def augmentar(X, y, fator=4):
     for _ in range(fator):
         X_a = X.copy()
         for i in range(len(X_a)):
-            R = matriz_rotacao(*rng.uniform(-MAX_ANG, MAX_ANG, 3))
-            X_a[i] = X_a[i] @ R.T.astype(np.float32)
+            R = matriz_rotacao_2d(rng.uniform(-MAX_ANG, MAX_ANG))
+            X_a[i] = X_a[i] @ R.T
             shift = rng.integers(-MAX_SHIFT, MAX_SHIFT + 1)
             if shift != 0:
                 X_a[i] = np.roll(X_a[i], shift, axis=0)
@@ -70,7 +69,7 @@ def augmentar(X, y, fator=4):
 
 def criar_conv1d():
     return keras.Sequential([
-        layers.Input(shape=(JANELA, 3)),
+        layers.Input(shape=(JANELA, EIXOS)),
         layers.Conv1D(32, 5, activation='relu'),
         layers.MaxPooling1D(2),
         layers.Conv1D(64, 3, activation='relu'),
