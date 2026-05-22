@@ -39,6 +39,14 @@
         #btn-iniciar:disabled{background:var(--surface);color:var(--text-dim);cursor:default;transform:none;filter:none;border:1px solid var(--border)}
 
         .debug{font-family:var(--mono);font-size:0.9rem;color:var(--accent);margin-top:18px;opacity:1;letter-spacing:1px;text-align:center}
+
+        .manual{margin-top:20px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:14px;width:100%;max-width:280px}
+        .manual-label{font-family:var(--mono);font-size:0.55rem;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;text-align:center}
+        .manual-botoes{display:flex;gap:10px}
+        .manual-btn{flex:1;padding:14px 0;font-size:1.4rem;font-weight:600;font-family:var(--mono);background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--text);cursor:pointer;transition:all 0.15s;user-select:none}
+        .manual-btn:hover{background:var(--surface);border-color:var(--accent)}
+        .manual-btn:active{transform:scale(0.95);background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+        .manual-btn:disabled{opacity:0.4;cursor:not-allowed}
     </style>
 </head>
 <body>
@@ -49,6 +57,14 @@
     <div id="label">Aguardando</div>
     <button id="btn-iniciar" disabled>Iniciar</button>
     <div class="debug" id="debug"></div>
+
+    <div class="manual">
+        <div class="manual-label">Controle manual</div>
+        <div class="manual-botoes">
+            <button class="manual-btn" id="btn-esq" disabled>&larr;</button>
+            <button class="manual-btn" id="btn-dir" disabled>&rarr;</button>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
@@ -71,7 +87,18 @@
         var elLabel = document.getElementById('label');
         var elBtn = document.getElementById('btn-iniciar');
         var elDebug = document.getElementById('debug');
+        var elBtnEsq = document.getElementById('btn-esq');
+        var elBtnDir = document.getElementById('btn-dir');
         document.getElementById('sala-tag').textContent = 'SALA ' + codigo;
+
+        function enviarManual(classe) {
+            if (!socket || !socket.connected) return;
+            socket.emit('gesto', classe);
+            mostrar(classe);
+        }
+
+        elBtnEsq.addEventListener('click', function () { enviarManual('esquerda'); });
+        elBtnDir.addEventListener('click', function () { enviarManual('direita'); });
 
         async function init() {
             try {
@@ -83,6 +110,8 @@
                     elEstado.textContent = 'Conectado';
                     elIcon.textContent = 'OK';
                     elBtn.disabled = false;
+                    elBtnEsq.disabled = false;
+                    elBtnDir.disabled = false;
                 });
                 socket.on('parceiro-conectou', function () {
                     elEstado.textContent = 'PC pareado';
@@ -96,6 +125,8 @@
                     elEstado.textContent = 'Desconectado';
                     elIcon.textContent = '!';
                     elRing.className = '';
+                    elBtnEsq.disabled = true;
+                    elBtnDir.disabled = true;
                 });
             } catch (e) {
                 elEstado.textContent = 'Erro: ' + e.message.substring(0, 30);
