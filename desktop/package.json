@@ -11,8 +11,7 @@
     "appId": "com.konectx.app",
     "productName": "Konectx",
     "win": {
-      "target": "nsis",
-      "icon": "icon.ico"
+      "target": "nsis"
     },
     "files": [
       "main.js",
