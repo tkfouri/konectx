@@ -53,7 +53,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        var JANELA=80, CONFIANCA=0.98, COOLDOWN=4000, INTERVALO=500;
+        var JANELA=80, CONFIANCA=0.85, COOLDOWN=4000, INTERVALO=500;
         var CLASSES=['direita','esquerda','repouso'];
         var model=null, buffer=[], emCooldown=false, socket=null, ultimaClass=0;
         var codigo=window.location.pathname.split('/').pop();

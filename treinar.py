@@ -36,6 +36,22 @@ def carregar_dados():
     return train_test_split(X, y_cat, test_size=0.2, random_state=42, stratify=y)
 
 
+def augmentar(X, y, fator=3):
+    rng = np.random.default_rng(42)
+    aug_X, aug_y = [X], [y]
+    for _ in range(fator):
+        X_a = X.copy()
+        for i in range(len(X_a)):
+            shift = rng.integers(-6, 7)
+            if shift != 0:
+                X_a[i] = np.roll(X_a[i], shift, axis=0)
+        X_a = X_a + rng.normal(0, 0.15, X_a.shape).astype(np.float32)
+        X_a = X_a - X_a.mean(axis=1, keepdims=True)
+        aug_X.append(X_a)
+        aug_y.append(y)
+    return np.concatenate(aug_X), np.concatenate(aug_y)
+
+
 def criar_conv1d():
     return keras.Sequential([
         layers.Input(shape=(JANELA, 3)),
@@ -54,6 +70,14 @@ def treinar_modelo(nome, criar_fn, X_train, y_train, X_val, y_val):
     print(f'Treinando: {nome}')
     print('=' * 50)
 
+    X_train_aug, y_train_aug = augmentar(X_train, y_train, fator=3)
+    print(f'Apos augmentation: {len(X_train_aug)} amostras de treino')
+
+    y_idx = np.argmax(y_train, axis=1)
+    contagem = np.bincount(y_idx, minlength=len(CLASSES))
+    pesos = {i: len(y_idx) / (len(CLASSES) * c) for i, c in enumerate(contagem)}
+    print(f'Class weights: {pesos}')
+
     modelo = criar_fn()
     modelo.compile(
         optimizer=keras.optimizers.Adam(0.001),
@@ -67,10 +91,11 @@ def treinar_modelo(nome, criar_fn, X_train, y_train, X_val, y_val):
     ]
 
     hist = modelo.fit(
-        X_train, y_train,
+        X_train_aug, y_train_aug,
         validation_data=(X_val, y_val),
         epochs=200,
-        batch_size=16,
+        batch_size=32,
+        class_weight=pesos,
         callbacks=cb,
         verbose=1
     )
