@@ -53,9 +53,9 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        var JANELA=80, CONFIANCA=0.92, COOLDOWN=4000, INTERVALO=500;
+        var JANELA=80, CONFIANCA=0.92, COOLDOWN=4000, INTERVALO=500, SIM_MIN=0.45;
         var CLASSES=['direita','esquerda','repouso'];
-        var model=null, buffer=[], emCooldown=false, socket=null, ultimaClass=0;
+        var model=null, templates=null, buffer=[], emCooldown=false, socket=null, ultimaClass=0;
         var codigo=window.location.pathname.split('/').pop();
 
         var elEstado=document.getElementById('estado');
@@ -66,9 +66,20 @@
         var elDebug=document.getElementById('debug');
         document.getElementById('sala-tag').textContent='SALA ' + codigo;
 
+        function cosSim(janela, template){
+            var dot=0, na=0, nb=0;
+            for(var i=0;i<janela.length;i++){
+                var a=janela[i][0], b=template[i][0];
+                dot+=a*b; na+=a*a; nb+=b*b;
+            }
+            return dot/(Math.sqrt(na*nb)+1e-9);
+        }
+
         async function init(){
             try{
                 model=await tf.loadLayersModel('/modelo/model.json');
+                var r=await fetch('/modelo/templates.json');
+                templates=await r.json();
                 elEstado.textContent='Modelo carregado';
                 socket=io();
                 socket.on('connect',function(){
@@ -94,6 +105,13 @@
             var ult=buffer[buffer.length-1];
             var primeiro=buffer[buffer.length-JANELA];
             var janela=buffer.slice(-JANELA).map(function(v){return [v[0]-primeiro[0]]});
+            var simD=templates?cosSim(janela,templates.direita):0;
+            var simE=templates?cosSim(janela,templates.esquerda):0;
+            var simMax=Math.max(simD,simE);
+            if(templates && simMax<SIM_MIN){
+                elDebug.innerHTML='X:'+ult[0].toFixed(1)+'<br>amp:'+amp.toFixed(1)+' simD:'+simD.toFixed(2)+' simE:'+simE.toFixed(2)+' (no match)';
+                return;
+            }
             try{
                 var entrada=tf.tensor3d([janela]);
                 var saida=model.predict(entrada);
@@ -103,7 +121,7 @@
                 var max=Math.max.apply(null,prob);
                 var idx=Array.prototype.indexOf.call(prob,max);
                 var classe=CLASSES[idx];
-                elDebug.innerHTML='X:'+ult[0].toFixed(1)+'<br>amp:'+amp.toFixed(1)+' | D:'+(prob[0]*100).toFixed(0)+' E:'+(prob[1]*100).toFixed(0)+' R:'+(prob[2]*100).toFixed(0);
+                elDebug.innerHTML='X:'+ult[0].toFixed(1)+' simD:'+simD.toFixed(2)+' simE:'+simE.toFixed(2)+'<br>amp:'+amp.toFixed(1)+' | D:'+(prob[0]*100).toFixed(0)+' E:'+(prob[1]*100).toFixed(0)+' R:'+(prob[2]*100).toFixed(0);
                 if(max>CONFIANCA&&classe!=='repouso'){
                     socket.emit('gesto',classe);
                     mostrar(classe);

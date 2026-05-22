@@ -215,6 +215,18 @@ def main():
     X_train, X_val, y_train, y_val = carregar_dados()
     print(f'\nTreino: {len(X_train)} | Validacao: {len(X_val)}')
 
+    X_train_delta = deltas(X_train)
+    y_idx = np.argmax(y_train, axis=1)
+    templates = {}
+    for i, nome in enumerate(CLASSES):
+        if nome == 'repouso':
+            continue
+        templates[nome] = X_train_delta[y_idx == i].mean(axis=0).tolist()
+    with open(os.path.join(SAIDA, 'templates.json'), 'w') as f:
+        os.makedirs(SAIDA, exist_ok=True)
+        json.dump(templates, f)
+    print(f'Templates salvos em {SAIDA}/templates.json')
+
     X_val = deltas(X_val)
 
     modelo, val_acc = treinar_modelo('Conv1D', criar_conv1d, X_train, y_train, X_val, y_val)
