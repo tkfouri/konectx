@@ -4,6 +4,12 @@ Sistema de controle por gestos com smartwatch ou celular. Você faz um gesto com
 
 Desenvolvido pela Konectx — empresa de inteligência artificial aplicada.
 
+## Download
+
+Instalador Windows mais recente: [github.com/tkfouri/konectx/releases/latest](https://github.com/tkfouri/konectx/releases/latest)
+
+Baixe o `Konectx Setup x.y.z.exe` e execute. Após instalar, siga os passos abaixo.
+
 ## Como usar
 
 Só precisa de três coisas: o app no PC, um celular ou relógio com navegador, e um PowerPoint aberto.
