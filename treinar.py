@@ -45,6 +45,10 @@ def matriz_rotacao(rx, ry, rz):
     return Rz @ Ry @ Rx
 
 
+def deltas(X):
+    return X - X[:, 0:1, :]
+
+
 def augmentar(X, y, fator=4):
     rng = np.random.default_rng(42)
     aug_X, aug_y = [X], [y]
@@ -84,6 +88,8 @@ def treinar_modelo(nome, criar_fn, X_train, y_train, X_val, y_val):
 
     X_train_aug, y_train_aug = augmentar(X_train, y_train, fator=3)
     print(f'Apos augmentation: {len(X_train_aug)} amostras de treino')
+
+    X_train_aug = deltas(X_train_aug)
 
     y_idx = np.argmax(y_train, axis=1)
     contagem = np.bincount(y_idx, minlength=len(CLASSES))
@@ -216,6 +222,8 @@ def main():
 
     X_train, X_val, y_train, y_val = carregar_dados()
     print(f'\nTreino: {len(X_train)} | Validacao: {len(X_val)}')
+
+    X_val = deltas(X_val)
 
     modelo, val_acc = treinar_modelo('Conv1D', criar_conv1d, X_train, y_train, X_val, y_val)
 
