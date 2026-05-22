@@ -17,7 +17,7 @@ SAIDA = 'modelo_tfjs'
 KERAS_H5 = 'modelo_keras.h5'
 
 
-EIXOS = 2
+EIXOS = 1
 
 
 def carregar_dados():
@@ -43,21 +43,14 @@ def deltas(X):
     return X - X[:, 0:1, :]
 
 
-def matriz_rotacao_2d(theta):
-    c, s = np.cos(theta), np.sin(theta)
-    return np.array([[c, -s], [s, c]], dtype=np.float32)
-
-
 def augmentar(X, y, fator=4):
     rng = np.random.default_rng(42)
     aug_X, aug_y = [X], [y]
-    MAX_ANG = np.deg2rad(20)
     MAX_SHIFT = 4
     for _ in range(fator):
         X_a = X.copy()
         for i in range(len(X_a)):
-            R = matriz_rotacao_2d(rng.uniform(-MAX_ANG, MAX_ANG))
-            X_a[i] = X_a[i] @ R.T
+            X_a[i] *= rng.uniform(0.85, 1.15)
             shift = rng.integers(-MAX_SHIFT, MAX_SHIFT + 1)
             if shift != 0:
                 X_a[i] = np.roll(X_a[i], shift, axis=0)

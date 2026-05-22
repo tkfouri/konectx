@@ -85,22 +85,19 @@
 
         function classificar(){
             if(!model||emCooldown||buffer.length<JANELA)return;
-            var amp=0;
-            for(var j=0;j<2;j++){
-                var mn=Infinity,mx=-Infinity;
-                for(var i=buffer.length-JANELA;i<buffer.length;i++){
-                    if(buffer[i][j]<mn)mn=buffer[i][j];
-                    if(buffer[i][j]>mx)mx=buffer[i][j];
-                }
-                if(mx-mn>amp)amp=mx-mn;
+            var mn=Infinity,mx=-Infinity;
+            for(var i=buffer.length-JANELA;i<buffer.length;i++){
+                if(buffer[i][0]<mn)mn=buffer[i][0];
+                if(buffer[i][0]>mx)mx=buffer[i][0];
             }
+            var amp=mx-mn;
             var ult=buffer[buffer.length-1];
             if(amp<AMP_MIN){
-                elDebug.innerHTML='X:'+ult[0].toFixed(1)+' Y:'+ult[1].toFixed(1)+'<br>amp:'+amp.toFixed(1)+' (parado)';
+                elDebug.innerHTML='X:'+ult[0].toFixed(1)+'<br>amp:'+amp.toFixed(1)+' (parado)';
                 return;
             }
             var primeiro=buffer[buffer.length-JANELA];
-            var janela=buffer.slice(-JANELA).map(function(v){return [v[0]-primeiro[0],v[1]-primeiro[1]]});
+            var janela=buffer.slice(-JANELA).map(function(v){return [v[0]-primeiro[0]]});
             try{
                 var entrada=tf.tensor3d([janela]);
                 var saida=model.predict(entrada);
@@ -110,14 +107,14 @@
                 var max=Math.max.apply(null,prob);
                 var idx=Array.prototype.indexOf.call(prob,max);
                 var classe=CLASSES[idx];
-                elDebug.innerHTML='X:'+ult[0].toFixed(1)+' Y:'+ult[1].toFixed(1)+'<br>amp:'+amp.toFixed(1)+' | D:'+(prob[0]*100).toFixed(0)+' E:'+(prob[1]*100).toFixed(0)+' R:'+(prob[2]*100).toFixed(0);
+                elDebug.innerHTML='X:'+ult[0].toFixed(1)+'<br>amp:'+amp.toFixed(1)+' | D:'+(prob[0]*100).toFixed(0)+' E:'+(prob[1]*100).toFixed(0)+' R:'+(prob[2]*100).toFixed(0);
                 if(max>CONFIANCA&&classe!=='repouso'){
                     socket.emit('gesto',classe);
                     mostrar(classe);
                     cooldown();
                 }
             }catch(err){
-                elDebug.innerHTML='ERR:'+err.message.substring(0,40)+'<br>X:'+ult[0].toFixed(1)+' Y:'+ult[1].toFixed(1);
+                elDebug.innerHTML='ERR:'+err.message.substring(0,40)+'<br>X:'+ult[0].toFixed(1);
             }
         }
 
