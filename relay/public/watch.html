@@ -38,7 +38,7 @@
         #btn-iniciar:hover{filter:brightness(1.1);transform:translateY(-1px)}
         #btn-iniciar:disabled{background:var(--surface);color:var(--text-dim);cursor:default;transform:none;filter:none;border:1px solid var(--border)}
 
-        .debug{font-family:var(--mono);font-size:1rem;color:var(--accent);margin-top:18px;opacity:1;letter-spacing:1px}
+        .debug{font-family:var(--mono);font-size:0.9rem;color:var(--accent);margin-top:18px;opacity:1;letter-spacing:1px;text-align:center}
     </style>
 </head>
 <body>
@@ -53,125 +53,141 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        var JANELA=80, CONFIANCA=0.92, COOLDOWN=4000, INTERVALO=500, SIM_MIN=0.45;
-        var CLASSES=['direita','esquerda','repouso'];
-        var model=null, templates=null, buffer=[], emCooldown=false, socket=null, ultimaClass=0;
-        var codigo=window.location.pathname.split('/').pop();
+        var JANELA = 80;
+        var CONFIANCA = 0.9;
+        var COOLDOWN = 2500;
+        var INTERVALO = 200;
+        var CLASSES = ['direita', 'esquerda', 'repouso'];
 
-        var elEstado=document.getElementById('estado');
-        var elRing=document.getElementById('ring');
-        var elIcon=document.getElementById('ring-icon');
-        var elLabel=document.getElementById('label');
-        var elBtn=document.getElementById('btn-iniciar');
-        var elDebug=document.getElementById('debug');
-        document.getElementById('sala-tag').textContent='SALA ' + codigo;
+        var model = null, socket = null;
+        var buffer = [];
+        var emCooldown = false;
+        var ultimaClass = 0;
+        var codigo = window.location.pathname.split('/').pop();
 
-        function cosSim(janela, template){
-            var dot=0, na=0, nb=0;
-            for(var i=0;i<janela.length;i++){
-                var a=janela[i][0], b=template[i][0];
-                dot+=a*b; na+=a*a; nb+=b*b;
-            }
-            return dot/(Math.sqrt(na*nb)+1e-9);
-        }
+        var elEstado = document.getElementById('estado');
+        var elRing = document.getElementById('ring');
+        var elIcon = document.getElementById('ring-icon');
+        var elLabel = document.getElementById('label');
+        var elBtn = document.getElementById('btn-iniciar');
+        var elDebug = document.getElementById('debug');
+        document.getElementById('sala-tag').textContent = 'SALA ' + codigo;
 
-        async function init(){
-            try{
-                model=await tf.loadLayersModel('/modelo/model.json');
-                var r=await fetch('/modelo/templates.json');
-                templates=await r.json();
-                elEstado.textContent='Modelo carregado';
-                socket=io();
-                socket.on('connect',function(){
-                    socket.emit('entrar-sala',{codigo:codigo,tipo:'watch'});
-                    elEstado.textContent='Conectado';
-                    elIcon.textContent='OK';
-                    elBtn.disabled=false;
+        async function init() {
+            try {
+                model = await tf.loadLayersModel('/modelo/model.json');
+                elEstado.textContent = 'Modelo carregado';
+                socket = io();
+                socket.on('connect', function () {
+                    socket.emit('entrar-sala', { codigo: codigo, tipo: 'watch' });
+                    elEstado.textContent = 'Conectado';
+                    elIcon.textContent = 'OK';
+                    elBtn.disabled = false;
                 });
-                socket.on('parceiro-conectou',function(){elEstado.textContent='PC pareado'; elEstado.style.color='var(--accent)'});
-                socket.on('parceiro-desconectou',function(){elEstado.textContent='PC desconectou'; elEstado.style.color='var(--text-dim)'});
-                socket.on('disconnect',function(){elEstado.textContent='Desconectado';elIcon.textContent='!';elRing.className=''});
-            }catch(e){elEstado.textContent='Erro: '+e.message.substring(0,30);elIcon.textContent='X'}
+                socket.on('parceiro-conectou', function () {
+                    elEstado.textContent = 'PC pareado';
+                    elEstado.style.color = 'var(--accent)';
+                });
+                socket.on('parceiro-desconectou', function () {
+                    elEstado.textContent = 'PC desconectou';
+                    elEstado.style.color = 'var(--text-dim)';
+                });
+                socket.on('disconnect', function () {
+                    elEstado.textContent = 'Desconectado';
+                    elIcon.textContent = '!';
+                    elRing.className = '';
+                });
+            } catch (e) {
+                elEstado.textContent = 'Erro: ' + e.message.substring(0, 30);
+                elIcon.textContent = 'X';
+            }
         }
 
-        function classificar(){
-            if(!model||emCooldown||buffer.length<JANELA)return;
-            var mn=Infinity,mx=-Infinity;
-            for(var i=buffer.length-JANELA;i<buffer.length;i++){
-                if(buffer[i][0]<mn)mn=buffer[i][0];
-                if(buffer[i][0]>mx)mx=buffer[i][0];
-            }
-            var amp=mx-mn;
-            var ult=buffer[buffer.length-1];
-            var primeiro=buffer[buffer.length-JANELA];
-            var janela=buffer.slice(-JANELA).map(function(v){return [v[0]-primeiro[0]]});
-            var simD=templates?cosSim(janela,templates.direita):0;
-            var simE=templates?cosSim(janela,templates.esquerda):0;
-            var simMax=Math.max(simD,simE);
-            if(templates && simMax<SIM_MIN){
-                elDebug.innerHTML='X:'+ult[0].toFixed(1)+'<br>amp:'+amp.toFixed(1)+' simD:'+simD.toFixed(2)+' simE:'+simE.toFixed(2)+' (no match)';
-                return;
-            }
-            try{
-                var entrada=tf.tensor3d([janela]);
-                var saida=model.predict(entrada);
-                var prob=saida.dataSync();
+        function classificar() {
+            if (!model || emCooldown || buffer.length < JANELA) return;
+
+            var primeiro = buffer[buffer.length - JANELA];
+            var janela = buffer.slice(-JANELA).map(function (v) {
+                return [v[0] - primeiro[0], v[1] - primeiro[1], v[2] - primeiro[2]];
+            });
+
+            try {
+                var entrada = tf.tensor3d([janela]);
+                var saida = model.predict(entrada);
+                var prob = saida.dataSync();
                 entrada.dispose();
                 saida.dispose();
-                var max=Math.max.apply(null,prob);
-                var idx=Array.prototype.indexOf.call(prob,max);
-                var classe=CLASSES[idx];
-                elDebug.innerHTML='X:'+ult[0].toFixed(1)+' simD:'+simD.toFixed(2)+' simE:'+simE.toFixed(2)+'<br>amp:'+amp.toFixed(1)+' | D:'+(prob[0]*100).toFixed(0)+' E:'+(prob[1]*100).toFixed(0)+' R:'+(prob[2]*100).toFixed(0);
-                if(max>CONFIANCA&&classe!=='repouso'){
-                    socket.emit('gesto',classe);
+
+                var max = Math.max.apply(null, prob);
+                var idx = Array.prototype.indexOf.call(prob, max);
+                var classe = CLASSES[idx];
+
+                elDebug.textContent =
+                    'D:' + (prob[0] * 100).toFixed(0) +
+                    ' E:' + (prob[1] * 100).toFixed(0) +
+                    ' R:' + (prob[2] * 100).toFixed(0);
+
+                if (max > CONFIANCA && classe !== 'repouso') {
+                    socket.emit('gesto', classe);
                     mostrar(classe);
                     cooldown();
                 }
-            }catch(err){
-                elDebug.innerHTML='ERR:'+err.message.substring(0,40)+'<br>X:'+ult[0].toFixed(1);
+            } catch (err) {
+                elDebug.textContent = 'ERR: ' + err.message.substring(0, 40);
             }
         }
 
-        function mostrar(c){
-            elRing.className=c;
-            elIcon.textContent=c==='direita'?'>>':'<<';
-            elLabel.textContent=c==='direita'?'Avançar':'Voltar';
-            setTimeout(function(){
-                elRing.className='ativo';
-                elIcon.textContent='';
-                elLabel.textContent='Monitorando';
-            },1000);
+        function mostrar(c) {
+            elRing.className = c;
+            elIcon.textContent = c === 'direita' ? '>>' : '<<';
+            elLabel.textContent = c === 'direita' ? 'Avançar' : 'Voltar';
+            setTimeout(function () {
+                elRing.className = 'ativo';
+                elIcon.textContent = '';
+                elLabel.textContent = 'Monitorando';
+            }, 1000);
         }
 
-        function cooldown(){emCooldown=true;buffer=[];setTimeout(function(){emCooldown=false},COOLDOWN)}
+        function cooldown() {
+            emCooldown = true;
+            buffer = [];
+            setTimeout(function () { emCooldown = false; }, COOLDOWN);
+        }
 
-        async function iniciar(){
-            try{
-                if(typeof DeviceMotionEvent.requestPermission==='function'){
-                    var p=await DeviceMotionEvent.requestPermission();
-                    if(p!=='granted'){elEstado.textContent='Permissão negada';return}
+        async function iniciar() {
+            try {
+                if (typeof DeviceMotionEvent.requestPermission === 'function') {
+                    var p = await DeviceMotionEvent.requestPermission();
+                    if (p !== 'granted') {
+                        elEstado.textContent = 'Permissão negada';
+                        return;
+                    }
                 }
-                if('wakeLock' in navigator){navigator.wakeLock.request('screen').catch(function(){})}
-                window.addEventListener('devicemotion',function(e){
-                    var a=e.accelerationIncludingGravity;
-                    if(!a||a.x===null)return;
-                    buffer.push([a.x,a.y,a.z]);
-                    while(buffer.length>JANELA)buffer.shift();
-                    var agora=Date.now();
-                    if(agora-ultimaClass>INTERVALO){
-                        ultimaClass=agora;
+                if ('wakeLock' in navigator) {
+                    navigator.wakeLock.request('screen').catch(function () {});
+                }
+                window.addEventListener('devicemotion', function (e) {
+                    var a = e.accelerationIncludingGravity;
+                    if (!a || a.x === null) return;
+                    buffer.push([a.x, a.y, a.z]);
+                    while (buffer.length > JANELA) buffer.shift();
+                    var agora = Date.now();
+                    if (agora - ultimaClass > INTERVALO) {
+                        ultimaClass = agora;
                         classificar();
                     }
                 });
-                elBtn.style.display='none';
-                elRing.className='ativo';
-                elIcon.textContent='';
-                elLabel.textContent='Monitorando';
-                elEstado.textContent='Sensores ativos';
-            }catch(e){elEstado.textContent='Erro: '+e.message.substring(0,25)}
+                elBtn.style.display = 'none';
+                elRing.className = 'ativo';
+                elIcon.textContent = '';
+                elLabel.textContent = 'Monitorando';
+                elEstado.textContent = 'Sensores ativos';
+            } catch (e) {
+                elEstado.textContent = 'Erro: ' + e.message.substring(0, 25);
+            }
         }
 
-        elBtn.addEventListener('click',iniciar);
+        elBtn.addEventListener('click', iniciar);
         init();
     </script>
 </body>
