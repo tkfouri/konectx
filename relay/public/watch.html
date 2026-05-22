@@ -121,8 +121,8 @@
 
         function mostrar(c){
             elRing.className=c;
-            elIcon.textContent=c==='direita'?'>>':'<<';
-            elLabel.textContent=c==='direita'?'Avançar':'Voltar';
+            elIcon.textContent=c==='direita'?'<<':'>>';
+            elLabel.textContent=c==='direita'?'Voltar':'Avançar';
             setTimeout(function(){
                 elRing.className='ativo';
                 elIcon.textContent='';
