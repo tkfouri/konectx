@@ -91,7 +91,20 @@
         var elBtnDir = document.getElementById('btn-dir');
         document.getElementById('sala-tag').textContent = 'SALA ' + codigo;
 
+        var wakeLockSentinel = null;
+        async function manterTelaAcordada() {
+            if (!('wakeLock' in navigator) || wakeLockSentinel) return;
+            try {
+                wakeLockSentinel = await navigator.wakeLock.request('screen');
+                wakeLockSentinel.addEventListener('release', function () { wakeLockSentinel = null; });
+            } catch (e) { }
+        }
+        document.addEventListener('visibilitychange', function () {
+            if (document.visibilityState === 'visible') manterTelaAcordada();
+        });
+
         function enviarManual(classe) {
+            manterTelaAcordada();
             if (!socket || !socket.connected) return;
             socket.emit('gesto', classe);
             mostrar(classe);
@@ -194,9 +207,7 @@
                         return;
                     }
                 }
-                if ('wakeLock' in navigator) {
-                    navigator.wakeLock.request('screen').catch(function () {});
-                }
+                manterTelaAcordada();
                 window.addEventListener('devicemotion', function (e) {
                     var a = e.accelerationIncludingGravity;
                     if (!a || a.x === null) return;
