@@ -5,11 +5,16 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder"
+    "build": "electron-builder --publish never"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tkfouri/konectx.git"
   },
   "build": {
     "appId": "com.konectx.app",
     "productName": "Konectx",
+    "publish": null,
     "win": {
       "target": "nsis"
     },
