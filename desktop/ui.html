@@ -98,7 +98,7 @@
         }
 
         function enviarTecla(direcao) {
-            const tecla = direcao === 'direita' ? '{LEFT}' : '{RIGHT}';
+            const tecla = direcao === 'direita' ? '{RIGHT}' : '{LEFT}';
             exec('powershell.exe -c "$wshell = New-Object -ComObject wscript.shell; $wshell.SendKeys(\'' + tecla + '\')"');
         }
 
@@ -127,9 +127,9 @@
                 socket.on('gesto', (classe) => {
                     enviarTecla(classe);
                     if (classe === 'direita') {
-                        setStatus('<<  Voltar', 'gesto-esq');
-                    } else {
                         setStatus('Avançar  >>', 'gesto-dir');
+                    } else {
+                        setStatus('<<  Voltar', 'gesto-esq');
                     }
                     setTimeout(() => setStatus('Dispositivo conectado', 'conectado'), 1000);
                 });

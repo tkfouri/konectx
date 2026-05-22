@@ -26,7 +26,6 @@ def carregar_dados():
 
     mapa = {c: i for i, c in enumerate(CLASSES)}
     X = np.array([d['features'] for d in dados], dtype=np.float32)
-    X = X - X.mean(axis=1, keepdims=True)
     y = np.array([mapa[d['label']] for d in dados])
 
     for c in CLASSES:
@@ -36,18 +35,31 @@ def carregar_dados():
     return train_test_split(X, y_cat, test_size=0.2, random_state=42, stratify=y)
 
 
-def augmentar(X, y, fator=3):
+def matriz_rotacao(rx, ry, rz):
+    cx, sx = np.cos(rx), np.sin(rx)
+    cy, sy = np.cos(ry), np.sin(ry)
+    cz, sz = np.cos(rz), np.sin(rz)
+    Rx = np.array([[1, 0, 0], [0, cx, -sx], [0, sx, cx]])
+    Ry = np.array([[cy, 0, sy], [0, 1, 0], [-sy, 0, cy]])
+    Rz = np.array([[cz, -sz, 0], [sz, cz, 0], [0, 0, 1]])
+    return Rz @ Ry @ Rx
+
+
+def augmentar(X, y, fator=4):
     rng = np.random.default_rng(42)
     aug_X, aug_y = [X], [y]
+    MAX_ANG = np.deg2rad(20)
+    MAX_SHIFT = 4
     for _ in range(fator):
         X_a = X.copy()
         for i in range(len(X_a)):
-            shift = rng.integers(-6, 7)
+            R = matriz_rotacao(*rng.uniform(-MAX_ANG, MAX_ANG, 3))
+            X_a[i] = X_a[i] @ R.T.astype(np.float32)
+            shift = rng.integers(-MAX_SHIFT, MAX_SHIFT + 1)
             if shift != 0:
                 X_a[i] = np.roll(X_a[i], shift, axis=0)
-        X_a = X_a + rng.normal(0, 0.15, X_a.shape).astype(np.float32)
-        X_a = X_a - X_a.mean(axis=1, keepdims=True)
-        aug_X.append(X_a)
+        X_a += rng.normal(0, 0.08, X_a.shape).astype(np.float32)
+        aug_X.append(X_a.astype(np.float32))
         aug_y.append(y)
     return np.concatenate(aug_X), np.concatenate(aug_y)
 

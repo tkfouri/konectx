@@ -95,12 +95,8 @@
                 if(mx-mn>amp)amp=mx-mn;
             }
             var ult=buffer[buffer.length-1];
-            var mx=0,my=0,mz=0;
-            for(var k=buffer.length-JANELA;k<buffer.length;k++){mx+=buffer[k][0];my+=buffer[k][1];mz+=buffer[k][2]}
-            mx/=JANELA;my/=JANELA;mz/=JANELA;
-            var janela=buffer.slice(-JANELA).map(function(v){return [v[0]-mx,v[1]-my,v[2]-mz]});
             try{
-                var entrada=tf.tensor3d([janela]);
+                var entrada=tf.tensor3d([buffer.slice(-JANELA)]);
                 var saida=model.predict(entrada);
                 var prob=saida.dataSync();
                 entrada.dispose();
@@ -108,7 +104,7 @@
                 var max=Math.max.apply(null,prob);
                 var idx=Array.prototype.indexOf.call(prob,max);
                 var classe=CLASSES[idx];
-                elDebug.innerHTML='mean X:'+mx.toFixed(1)+' Y:'+my.toFixed(1)+' Z:'+mz.toFixed(1)+'<br>amp:'+amp.toFixed(1)+' | D:'+(prob[0]*100).toFixed(0)+' E:'+(prob[1]*100).toFixed(0)+' R:'+(prob[2]*100).toFixed(0);
+                elDebug.innerHTML='X:'+ult[0].toFixed(1)+' Y:'+ult[1].toFixed(1)+' Z:'+ult[2].toFixed(1)+'<br>amp:'+amp.toFixed(1)+' | D:'+(prob[0]*100).toFixed(0)+' E:'+(prob[1]*100).toFixed(0)+' R:'+(prob[2]*100).toFixed(0);
                 if(max>CONFIANCA&&classe!=='repouso'){
                     socket.emit('gesto',classe);
                     mostrar(classe);
@@ -121,8 +117,8 @@
 
         function mostrar(c){
             elRing.className=c;
-            elIcon.textContent=c==='direita'?'<<':'>>';
-            elLabel.textContent=c==='direita'?'Voltar':'Avançar';
+            elIcon.textContent=c==='direita'?'>>':'<<';
+            elLabel.textContent=c==='direita'?'Avançar':'Voltar';
             setTimeout(function(){
                 elRing.className='ativo';
                 elIcon.textContent='';
