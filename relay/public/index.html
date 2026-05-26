@@ -28,7 +28,7 @@
         nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:24px 40px;background:rgba(10,10,10,0.6);backdrop-filter:blur(8px)}
         .nav-mark{font-weight:600;font-size:0.95rem;letter-spacing:-0.3px}
         .nav-mark span{color:var(--accent)}
-        .nav-links{display:flex;gap:28px}
+        .nav-links{display:flex;gap:28px;flex-wrap:wrap}
         .nav-links a{font-family:var(--mono);font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;color:var(--text-mid);transition:color 0.2s}
         .nav-links a:hover{color:var(--text)}
 
@@ -76,6 +76,37 @@
         .pillar h4{font-family:var(--mono);font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
         .pillar p{font-size:0.95rem;color:var(--text-mid);line-height:1.75;font-weight:400}
 
+        .docs{padding:120px 40px;max-width:980px;margin:0 auto}
+        .docs-tabs{display:flex;gap:4px;margin-top:36px;margin-bottom:32px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+        .docs-tab{background:none;border:none;color:var(--text-mid);font-family:var(--font);font-size:0.85rem;font-weight:500;padding:14px 20px;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;margin-bottom:-1px}
+        .docs-tab:hover{color:var(--text)}
+        .docs-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+        .docs-panel{display:none;font-size:0.95rem;color:var(--text-mid);line-height:1.75}
+        .docs-panel.active{display:block}
+        .docs-meta{font-family:var(--mono);font-size:0.7rem;color:var(--text-dim);letter-spacing:1px;margin-bottom:24px;text-transform:uppercase}
+        .docs-panel h3{font-weight:600;color:var(--text);font-size:1.15rem;letter-spacing:-0.01em;margin-top:32px;margin-bottom:12px}
+        .docs-panel h3:first-of-type{margin-top:0}
+        .docs-panel h4{font-family:var(--mono);font-size:0.7rem;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-top:28px;margin-bottom:10px}
+        .docs-panel h5{font-weight:600;color:var(--text);font-size:0.95rem;margin-top:24px;margin-bottom:10px}
+        .docs-panel p{margin-bottom:14px}
+        .docs-panel ul{list-style:none;padding-left:0;margin-bottom:14px}
+        .docs-panel ul li{padding:6px 0;border-bottom:1px solid var(--line)}
+        .docs-panel ul li:last-child{border-bottom:none}
+        .docs-panel .swot-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0 24px}
+        .docs-panel .swot-card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+        .docs-panel .swot-card .swot-label{font-family:var(--mono);font-size:0.62rem;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;display:block}
+        .docs-panel .swot-card p{font-size:0.88rem;margin:0}
+        .docs-panel table{width:100%;border-collapse:collapse;margin:16px 0 24px;font-size:0.88rem}
+        .docs-panel table th,.docs-panel table td{padding:10px 12px;border:1px solid var(--line);text-align:left;vertical-align:top}
+        .docs-panel table th{background:var(--surface);color:var(--text);font-weight:600;font-family:var(--mono);font-size:0.72rem;letter-spacing:1px;text-transform:uppercase}
+        .docs-panel table td{color:var(--text-mid)}
+        .docs-panel table .total td{background:var(--surface);color:var(--text);font-weight:600}
+        .docs-panel .fonte{font-family:var(--mono);font-size:0.7rem;color:var(--text-dim);letter-spacing:0.5px;margin-bottom:24px;display:block}
+        .docs-panel .ref-list{font-size:0.82rem;line-height:1.7}
+        .docs-panel .ref-list p{margin-bottom:10px;padding-left:20px;text-indent:-20px}
+        .docs-panel .ref-list a{color:var(--text-mid);text-decoration:underline;text-decoration-color:var(--line)}
+        .docs-panel .ref-list a:hover{color:var(--accent)}
+
         footer{padding:48px 40px;display:flex;align-items:center;justify-content:space-between;gap:16px;border-top:1px solid var(--line)}
         .foot-mark{font-weight:600;font-size:0.9rem}
         .foot-mark span{color:var(--accent)}
@@ -86,13 +117,18 @@
 
         @media(max-width:768px){
             nav{padding:18px 22px}
-            .nav-links{gap:16px}
-            .section,.pillars{padding:80px 22px}
+            .nav-links{gap:14px}
+            .nav-links a{font-size:0.65rem}
+            .section,.pillars,.docs{padding:80px 22px}
             .grid,.pillar-grid{grid-template-columns:1fr}
             .hero{padding:100px 22px 60px}
             .quote{padding:80px 22px}
             .strip{flex-direction:column;gap:14px;align-items:center;padding:22px}
             footer{flex-direction:column;text-align:center;padding:32px 22px}
+            .docs-tab{padding:12px 14px;font-size:0.78rem}
+            .docs-panel .swot-grid{grid-template-columns:1fr}
+            .docs-panel table{font-size:0.78rem}
+            .docs-panel table th,.docs-panel table td{padding:8px}
         }
     </style>
 </head>
@@ -103,6 +139,7 @@
         <a href="#sobre">Sobre</a>
         <a href="#missao">Missão</a>
         <a href="#valores">Valores</a>
+        <a href="#materiais">Materiais</a>
     </div>
 </nav>
 
@@ -162,6 +199,464 @@
     </div>
 </section>
 
+<section class="docs reveal" id="materiais">
+    <div class="section-num">03 — Materiais</div>
+    <h2 class="section-title">Documentação acadêmica</h2>
+    <p class="section-body">Materiais elaborados para a disciplina de Empreendedorismo — análise interna da empresa, estudo de concorrência com SWOT e relatório financeiro completo.</p>
+
+    <div class="docs-tabs" role="tablist">
+        <button class="docs-tab active" data-tab="empresa" role="tab">Empresa</button>
+        <button class="docs-tab" data-tab="concorrencia" role="tab">Concorrentes &amp; SWOT</button>
+        <button class="docs-tab" data-tab="financeiro" role="tab">Relatório Financeiro</button>
+    </div>
+
+    <!-- ABA EMPRESA -->
+    <div class="docs-panel active" id="panel-empresa" role="tabpanel">
+        <div class="docs-meta">Atividade 1º bimestre — Empreendedorismo · Aron Murata, Bruno da Silva, Eduardo Cardoso, João Fenerick, Thiago Kfouri</div>
+
+        <h3>1. Descrição da empresa</h3>
+        <p>Somos uma empresa de inteligência artificial aplicada que desenvolve produtos próprios e soluções sob medida. Atuamos em automação de processos, sistemas inteligentes e integração entre pessoas e tecnologia, atendendo desde indústrias e agronegócios até profissionais que precisam de ferramentas mais simples e acessíveis no dia a dia.</p>
+
+        <h3>2. Missão</h3>
+        <p>Devolver o seu foco para o que realmente importa. Nós cuidamos para que a tecnologia ao seu redor trabalhe por você, de forma invisível, acessível e sem complicação.</p>
+
+        <h3>3. Visão</h3>
+        <p>Ser referência nacional em soluções de inteligência artificial aplicada, tornando a automação e os sistemas inteligentes acessíveis a empresas e profissionais de qualquer porte e área de atuação.</p>
+
+        <h3>4. Valores</h3>
+        <ul>
+            <li><strong>Simplicidade:</strong> se você precisou de um manual, nós falhamos.</li>
+            <li><strong>Acessibilidade:</strong> tecnologia que cabe no bolso de quem precisa.</li>
+            <li><strong>Propósito antes da técnica:</strong> não criamos IA apenas para impressionar, criamos para resolver problemas reais.</li>
+        </ul>
+
+        <h3>5. Propósito</h3>
+        <p>Fazer a tecnologia trabalhar para as pessoas, e não as pessoas para a tecnologia.</p>
+
+        <h3>6. Segmentação</h3>
+        <p>A Konectx segmenta o mercado em até cinco perfis: professores e palestrantes que precisam de ferramentas práticas para apresentações, gestores de segurança do trabalho em indústrias que buscam automatizar fiscalização, donos de pequenas e médias empresas que precisam de tecnologia acessível sem equipe de TI, engenheiros agrônomos que necessitam de monitoramento inteligente no campo, e coordenadores pedagógicos que buscam inovação com baixo custo.</p>
+
+        <h3>7. Público-alvo</h3>
+        <p>Donos e gestores de pequenas e médias empresas.</p>
+        <h5>Dados demográficos</h5>
+        <p>Idade entre 30 e 55 anos, ambos os gêneros, renda entre R$ 6.000 e R$ 20.000, escolaridade do ensino médio ao superior completo.</p>
+        <h5>Localização geográfica</h5>
+        <p>Cidades médias do interior de São Paulo, Minas Gerais e Paraná, com potencial de expansão para capitais e demais estados. Regiões com forte presença de comércio, serviços, agroindústria e pequenas fábricas.</p>
+        <h5>Comportamento</h5>
+        <p>São profissionais com foco total na operação do negócio, que sabem que a tecnologia poderia facilitar seu trabalho, mas não têm conhecimento técnico nem equipe de TI dedicada. Já se frustraram com sistemas caros que não conseguiram usar. Compram por indicação e pelo resultado visível. Valorizam soluções baratas, simples e que funcionem sem treinamento. Não querem saber como funciona, apenas querem que funcione.</p>
+
+        <h3>8. Posicionamento</h3>
+        <p>A Konectx se posiciona como a empresa de inteligência artificial para quem não entende de inteligência artificial. Enquanto o mercado vende complexidade técnica como diferencial, a Konectx vende a ausência dela — soluções onde a IA trabalha invisível e o cliente só percebe o resultado. O diferencial competitivo está em três pilares: custo acessível (infraestrutura 100% open source e gratuita), zero configuração (funciona na instalação), e foco em problemas reais antes de impressionar com técnica. Se o cliente precisou de um manual, o produto ainda não está pronto.</p>
+
+        <h3>9. Persona</h3>
+        <h5>Nome: Carlos Eduardo Martins, 42 anos</h5>
+        <p><strong>Quem é:</strong> dono de uma metalúrgica de médio porte em Ribeirão Preto, SP, com 35 funcionários. Formado em Administração, está na gestão há 8 anos. Casado, dois filhos, renda mensal de R$ 14.000.</p>
+        <p><strong>Rotina:</strong> acorda cedo, chega na fábrica às 7h, passa o dia entre chão de fábrica, reuniões com clientes e tarefas administrativas. Faz apresentações mensais para a equipe e trimestrais para clientes grandes. Sai às 19h e ainda responde mensagens de trabalho pelo celular à noite.</p>
+        <p><strong>Relação com tecnologia:</strong> usa bem o celular e o WhatsApp Business. Sabe mexer no Excel e no PowerPoint básico. Já tentou implantar um sistema de gestão (ERP) na empresa, mas desistiu em 3 meses porque era complicado demais e ninguém usava. Tem um Galaxy Watch que usa para notificações e saúde. Não sabe programar e não pretende aprender.</p>
+        <p><strong>Frustrações:</strong> perde tempo com tarefas que sente que poderiam ser automatizadas, mas não sabe como. Já pesquisou soluções de IA no Google e desistiu ao ver os preços (R$ 2.000 a R$ 5.000/mês) ou a complexidade da implementação. Acha que tecnologia "é coisa de empresa grande". Na última auditoria de segurança do trabalho, levou multa porque um funcionário estava sem capacete e ninguém viu. Nas apresentações, fica preso ao notebook e não consegue se movimentar enquanto fala.</p>
+        <p><strong>O que valoriza:</strong> resultado visível e rápido. Se não funcionar em 5 minutos, descarta. Compra por indicação de outros empresários, não por propaganda. Prefere pagar pouco e ir testando do que assinar contrato longo. Não quer saber da tecnologia por trás — quer saber se resolve o problema.</p>
+        <p><strong>Como a Konectx o atinge:</strong> Carlos vê um colega empresário usando o Kinetix Slides numa apresentação do Rotary e pergunta o que é. Descobre que é gratuito, instala no notebook em 2 minutos e testa na reunião seguinte. Funciona. Na semana seguinte entra no site da Konectx e vê que eles também fazem detecção de EPI por câmera. Pede um orçamento. O preço é acessível. Contrata. Dois problemas resolvidos pela mesma empresa, sem precisar de equipe de TI.</p>
+    </div>
+
+    <!-- ABA CONCORRENCIA -->
+    <div class="docs-panel" id="panel-concorrencia" role="tabpanel">
+        <div class="docs-meta">Análise de concorrência e SWOT — Empreendedorismo</div>
+
+        <h3>Principais concorrentes</h3>
+
+        <h4>1. Onflag Marketing Digital — Ribeirão Preto/SP</h4>
+        <p>Fundada em 2016, localizada no Jardim Botânico em Ribeirão Preto. Desenvolve agentes autônomos de IA para PMEs da região, com automação de atendimento via WhatsApp, qualificação de leads e verificação de documentos. Concorre diretamente com a Konectx na necessidade de automação acessível para donos de PME. Diferença: foco exclusivo em marketing digital e chatbots, cobra por projeto/mensalidade. A Konectx tem custo zero e atua em mais áreas (apresentações, segurança, visão computacional).</p>
+
+        <h4>2. AI Tech Solutions — Ribeirão Preto/SP</h4>
+        <p>Empresa de Ribeirão Preto que oferece chatbots com IA, criação de sites, automação de processos e suporte técnico. Missão declarada de democratizar a IA para negócios de todos os tamanhos. Concorre na necessidade de "tecnologia acessível para PME sem equipe de TI". Diferença: modelo de consultoria com orçamento por projeto, foco em chatbots e web. A Konectx entrega produtos prontos com custo zero de operação.</p>
+
+        <h4>3. CreateStorm — Ribeirão Preto/SP</h4>
+        <p>Agência com abordagem "IA First" que integra inteligência artificial, automação de processos e estratégia de negócio para criar soluções digitais. Atua com sites, SEO, automação de marketing e conteúdo com IA integrado a ferramentas como N8N, Make e ClickUp. Concorre na necessidade de automação inteligente para PMEs. Diferença: é agência de marketing que usa IA como ferramenta, não uma empresa de IA que resolve problemas operacionais. Cobra mensalidade de gestão.</p>
+
+        <h4>4. Roberty Automation — Ribeirão Preto/SP</h4>
+        <p>Plataforma de hiperautomação com sede em Ribeirão Preto, focada em RPA, agentes de IA e automação de processos. Trabalha com SDKs, Python, Node.js e dashboards com analytics aumentado. Concorre na necessidade de automação de processos para empresas. Diferença: voltada para empresas de médio e grande porte com equipe técnica, plataforma complexa. A Konectx mira no dono de PME que não entende de tecnologia.</p>
+
+        <h4>5. Logitech — Multinacional (vende no Brasil todo, incluindo interior de SP)</h4>
+        <p>Fabrica passadores de slide como o Spotlight (R$ 500 a R$ 1.800) e o R500 (R$ 150 a R$ 250). Concorre diretamente com o Kinetix Slides na necessidade de "controlar apresentações sem ficar preso ao computador". Diferença: é hardware físico extra que precisa comprar, carregar e lembrar de levar. A Konectx usa o relógio que o apresentador já tem, com custo zero.</p>
+
+        <h4>6. Elevenmind — São Paulo/SP (atende Ribeirão Preto)</h4>
+        <p>Agência que oferece chatbots com IA em Ribeirão Preto com conversas ilimitadas via WhatsApp e e-mail, pipelines e automação. Ecossistema completo de marketing, vendas e automação. Concorre na necessidade de automatizar atendimento e vendas. Diferença: é um ecossistema complexo e caro, voltado para empresas com orçamento de marketing. A Konectx foca na simplicidade radical — se precisou de manual, falhou.</p>
+
+        <h3>Análise SWOT</h3>
+
+        <h4>1. Onflag Marketing Digital (Ribeirão Preto)</h4>
+        <div class="swot-grid">
+            <div class="swot-card"><span class="swot-label">Forças</span><p>Presença local consolidada em Ribeirão Preto (9 anos). Experiência prática com agentes autônomos de IA para PMEs. Atendimento personalizado e próximo ao cliente. Conhecimento do mercado regional.</p></div>
+            <div class="swot-card"><span class="swot-label">Fraquezas</span><p>Foco restrito a marketing digital e chatbots. Equipe enxuta limita a capacidade de escalar. Sem produtos próprios — tudo é projeto sob demanda. Dependência de plataformas terceiras (N8N, Make).</p></div>
+            <div class="swot-card"><span class="swot-label">Oportunidades</span><p>Crescimento da demanda por IA em PMEs da região. Expansão para automação de processos além de marketing. Parcerias com associações comerciais locais.</p></div>
+            <div class="swot-card"><span class="swot-label">Ameaças</span><p>Concorrência de plataformas self-service de chatbot (BotConversa, Suri). Clientes podem internalizar a automação conforme aprendem. Empresas maiores de SP capital entrando no mercado regional.</p></div>
+        </div>
+
+        <h4>2. AI Tech Solutions (Ribeirão Preto)</h4>
+        <div class="swot-grid">
+            <div class="swot-card"><span class="swot-label">Forças</span><p>Portfólio diversificado (chatbots, sites, automação, suporte técnico). Missão declarada de democratizar a IA. Atendimento presencial e remoto. Preço competitivo para a região.</p></div>
+            <div class="swot-card"><span class="swot-label">Fraquezas</span><p>Modelo de consultoria por projeto — receita irregular. Sem produto escalável próprio. Marca pouco conhecida fora de Ribeirão Preto. Dependência de poucos clientes grandes.</p></div>
+            <div class="swot-card"><span class="swot-label">Oportunidades</span><p>Demanda crescente por suporte técnico e IA integrados. Oferecer pacotes recorrentes (mensalidade) ao invés de projetos pontuais. Atender cidades vizinhas (Franca, Araraquara, São Carlos).</p></div>
+            <div class="swot-card"><span class="swot-label">Ameaças</span><p>CreateStorm e Onflag disputam o mesmo público local. Ferramentas no-code permitem que o cliente faça sozinho. Dificuldade de reter talentos técnicos na região.</p></div>
+        </div>
+
+        <h4>3. CreateStorm (Ribeirão Preto)</h4>
+        <div class="swot-grid">
+            <div class="swot-card"><span class="swot-label">Forças</span><p>Posicionamento "IA First" bem definido. Integração completa (sites, SEO, automação e conteúdo). Ferramentas próprias como DevTools Pro (mais de 40 ferramentas gratuitas). Foco em performance e resultados mensuráveis.</p></div>
+            <div class="swot-card"><span class="swot-label">Fraquezas</span><p>É agência de marketing, não empresa de IA — a IA é ferramenta, não produto. Modelo de mensalidade pode ser caro para microempresas. Serviços genéricos que muitas agências oferecem. Escalabilidade limitada pelo modelo de agência.</p></div>
+            <div class="swot-card"><span class="swot-label">Oportunidades</span><p>Expandir o DevTools Pro como produto SaaS independente. Criar pacotes simplificados para microempresas. Tornar-se referência em IA aplicada a marketing na região.</p></div>
+            <div class="swot-card"><span class="swot-label">Ameaças</span><p>Saturação do mercado de agências digitais. Ferramentas de IA generativa (ChatGPT, Gemini) substituindo parte dos serviços. Clientes migrando para plataformas all-in-one.</p></div>
+        </div>
+
+        <h4>4. Roberty Automation (Ribeirão Preto)</h4>
+        <div class="swot-grid">
+            <div class="swot-card"><span class="swot-label">Forças</span><p>Plataforma de RPA 100% brasileira com produto próprio escalável. Clientes como Mondial e Ourofino validam a solução. Adquirida pela Lecom Tecnologia, ganhando estrutura e capital. Modelo de parceiros que multiplica a distribuição sem custo.</p></div>
+            <div class="swot-card"><span class="swot-label">Fraquezas</span><p>Plataforma voltada para perfil técnico — exige treinamento. Preço de licenciamento inviável para microempresas. Foco em RPA clássico, ainda incorporando IA. Pouco conhecida fora do nicho de automação empresarial.</p></div>
+            <div class="swot-card"><span class="swot-label">Oportunidades</span><p>Integração profunda com IA generativa e agentes autônomos. Expandir para PMEs menores com plano simplificado. Explorar o mercado de saúde e agro com RPA especializado.</p></div>
+            <div class="swot-card"><span class="swot-label">Ameaças</span><p>Grandes players internacionais (UiPath, Automation Anywhere, Power Automate). Risco de comoditização do RPA com ferramentas gratuitas. Dependência da Lecom para direcionamento estratégico.</p></div>
+        </div>
+
+        <h4>5. Logitech (Global, vende no Brasil)</h4>
+        <div class="swot-grid">
+            <div class="swot-card"><span class="swot-label">Forças</span><p>Marca mundialmente reconhecida e confiável. Rede de distribuição massiva (Amazon, Kabum, Magalu). Produto maduro e testado por milhões de usuários. Ecossistema completo (mouse, teclado, apresentador, câmera).</p></div>
+            <div class="swot-card"><span class="swot-label">Fraquezas</span><p>Preço alto para o padrão brasileiro (R$ 150 a R$ 1.800). É hardware físico — precisa comprar, carregar, ter bateria. Sem inovação disruptiva no segmento de apresentadores. Não resolve outras necessidades do cliente.</p></div>
+            <div class="swot-card"><span class="swot-label">Oportunidades</span><p>Integrar IA nos apresentadores (controle por gesto, voz). Criar versão mais acessível para mercado emergente. Parcerias com plataformas de videoconferência.</p></div>
+            <div class="swot-card"><span class="swot-label">Ameaças</span><p>Soluções baseadas em smartphone e smartwatch eliminam o hardware. Concorrentes chineses com preço muito inferior. Apresentações remotas reduzem a necessidade de passador físico.</p></div>
+        </div>
+
+        <h4>6. Elevenmind (São Paulo, atende Ribeirão Preto)</h4>
+        <div class="swot-grid">
+            <div class="swot-card"><span class="swot-label">Forças</span><p>20 anos de experiência e mais de 15 mil cases. Ecossistema completo (marketing, vendas, automação e IA). Presença internacional (4 continentes). Posicionamento premium com autoridade consolidada.</p></div>
+            <div class="swot-card"><span class="swot-label">Fraquezas</span><p>Preço inacessível para PMEs de pequeno porte. Complexidade do ecossistema afasta clientes menos técnicos. Sede em SP — atendimento remoto para o interior pode ser impessoal. Comunicação institucional excessivamente abstrata.</p></div>
+            <div class="swot-card"><span class="swot-label">Oportunidades</span><p>Criar tier simplificado para PMEs do interior. Expandir parcerias com agências regionais. Aproveitar a presença em Ribeirão Preto para eventos e networking local.</p></div>
+            <div class="swot-card"><span class="swot-label">Ameaças</span><p>Agências locais (Onflag, CreateStorm) roubam clientes com atendimento mais próximo. Ferramentas self-service tornam parte dos serviços dispensável. Novo ciclo de IA pode tornar a abordagem de ecossistema pesada.</p></div>
+        </div>
+
+        <h4>7. Konectx (nossa empresa)</h4>
+        <div class="swot-grid">
+            <div class="swot-card"><span class="swot-label">Forças</span><p>Custo operacional zero (infraestrutura 100% gratuita e open source). Produto funcional com IA embarcada (98,9% de acurácia). Proposta radical de simplicidade — zero configuração para o usuário final. Portfólio diversificado planejado (slides, segurança industrial, chatbots, agro).</p></div>
+            <div class="swot-card"><span class="swot-label">Fraquezas</span><p>Empresa nascente, sem base de clientes. Equipe reduzida (estudantes em formação). Produto principal (Kinetix Slides) é nicho — mercado limitado. Dependência de infraestrutura gratuita de terceiros (Oracle, is-a.dev, Let's Encrypt).</p></div>
+            <div class="swot-card"><span class="swot-label">Oportunidades</span><p>Mercado de IA para PMEs no interior de SP é pouco explorado. Parcerias com instituições de ensino como canal de distribuição gratuito. Expansão para segurança industrial (EPI) e agro (detecção de pragas) com know-how existente. Modelo freemium permite escalar sem barreira de entrada.</p></div>
+            <div class="swot-card"><span class="swot-label">Ameaças</span><p>Concorrentes locais com mais experiência e carteira de clientes. Logitech pode lançar solução similar com wearables. Mudanças em políticas de free tier da Oracle ou is-a.dev. Dificuldade de monetizar quando o posicionamento é custo zero.</p></div>
+        </div>
+    </div>
+
+    <!-- ABA FINANCEIRO -->
+    <div class="docs-panel" id="panel-financeiro" role="tabpanel">
+        <div class="docs-meta">Relatório Financeiro — Empreendedorismo · Aron Murata, Bruno da Silva, Eduardo Cardoso, João Fenerick, Thiago Kfouri</div>
+
+        <h3>1. Introdução</h3>
+        <p>O presente relatório tem por objetivo apresentar a estrutura financeira inicial da Konectx, empresa de inteligência artificial aplicada com sede em Ribeirão Preto (SP), nos termos exigidos pela disciplina de Empreendedorismo. A organização será constituída como Sociedade Empresária Limitada (LTDA) por 2 (dois) sócios, enquadrada no Regime do Simples Nacional, Anexo III, por meio do Fator R, dado que a folha de pró-labore deverá representar mais de 28% da receita bruta nos 12 (doze) primeiros meses de operação.</p>
+        <p>Todos os valores apresentados foram obtidos em fontes oficiais ou de referência para o exercício de 2026, encontrando-se devidamente hiperlinkados ao longo do documento. O relatório contempla os investimentos fixos, o capital de giro, o estoque inicial, a divisão entre custos fixos e variáveis, a projeção de vendas em três cenários (pessimista, realista e otimista), bem como os indicadores financeiros de Ponto de Equilíbrio (Break-Even), Lucratividade e Retorno sobre o Investimento (ROI).</p>
+
+        <h3>2. Parâmetros base do exercício de 2026</h3>
+        <p>Antes de detalhar a estrutura financeira, faz-se necessário consolidar os parâmetros trabalhistas, previdenciários e tributários vigentes em 2026, conforme apresentados na Tabela 1.</p>
+        <p><strong>Tabela 1 — Parâmetros base aplicáveis em 2026 (Brasil)</strong></p>
+        <table>
+            <thead><tr><th>Parâmetro</th><th>Valor</th><th>Fonte</th></tr></thead>
+            <tbody>
+                <tr><td>Salário mínimo nacional 2026</td><td>R$ 1.621,00 (Decreto 12.797/2025, reajuste de 6,79%)</td><td>Planalto (2025)</td></tr>
+                <tr><td>Salário mínimo paulista 2026</td><td>R$ 1.804,00 vigente / R$ 1.874,00 aprovado</td><td>Agência SP (2026)</td></tr>
+                <tr><td>Teto previdenciário do INSS</td><td>R$ 8.475,55</td><td>Serasa Experian (2026)</td></tr>
+                <tr><td>Alíquota INSS sobre pró-labore</td><td>11% retido na fonte do sócio</td><td>Contabilizei (2026)</td></tr>
+                <tr><td>Simples Nacional — Anexo III, 1ª faixa</td><td>Alíquota nominal de 6% até RBT12 de R$ 180 mil</td><td>Contabilizei (2026)</td></tr>
+                <tr><td>Fator R</td><td>Folha 12m / RBT12 ≥ 28% mantém no Anexo III</td><td>e-Simples Auditoria (2026)</td></tr>
+                <tr><td>UFESP 2026</td><td>R$ 38,42</td><td>JUCESP (2026)</td></tr>
+            </tbody>
+        </table>
+        <span class="fonte">Fonte: elaborado pelos autores com base em fontes oficiais (2026).</span>
+
+        <h3>3. Investimento fixo</h3>
+        <p>Considerando a existência de 2 (dois) sócios, a constituição como LTDA torna-se obrigatória, uma vez que o Microempreendedor Individual (MEI) admite somente 1 (um) titular. A abertura via Balcão Único no município de São Paulo é gratuita; em Ribeirão Preto, contudo, incidem emolumentos da Junta Comercial do Estado de São Paulo (JUCESP), alvará municipal e honorários contábeis de constituição. Compõem ainda o investimento fixo um fundo de reposição de equipamentos, em razão da responsabilidade da empresa pela substituição das máquinas dos sócios em caso de falha decorrente do uso operacional. A composição detalhada é apresentada na Tabela 2.</p>
+        <p><strong>Tabela 2 — Composição do investimento fixo</strong></p>
+        <table>
+            <thead><tr><th>Item</th><th>Descrição</th><th>Valor (R$)</th><th>Fonte</th></tr></thead>
+            <tbody>
+                <tr><td>Abertura LTDA na JUCESP</td><td>Arquivamento de contrato social — sociedade empresária limitada</td><td>273,55</td><td>JUCESP (2026)</td></tr>
+                <tr><td>Honorários contábeis de constituição</td><td>Contrato social, registro, inscrições municipal e estadual</td><td>500,00</td><td>Contaja (2026)</td></tr>
+                <tr><td>Certificado digital e-CNPJ A1</td><td>Validade de 12 meses, obrigatório para NF-e e DAS</td><td>235,00</td><td>Omie (2026)</td></tr>
+                <tr><td>Alvará municipal (Ribeirão Preto)</td><td>Taxa de licença de localização</td><td>300,00</td><td>Meu Contador Online (2026)</td></tr>
+                <tr><td>Fundo de reposição de equipamentos</td><td>Reserva técnica de ≈20% sobre 2 notebooks i7 (R$ 6.500 a R$ 7.000 cada)</td><td>3.000,00</td><td>TechTudo (2026)</td></tr>
+                <tr><td>Smartwatch para demonstração</td><td>Galaxy Watch 6 para demonstração do Kinetix Slides</td><td>1.613,50</td><td>Busqa (2026)</td></tr>
+                <tr><td>Material comercial inicial</td><td>Cartões, banners e folders para eventos regionais</td><td>500,00</td><td>Estimativa dos autores</td></tr>
+                <tr><td>Servidor em nuvem</td><td>Oracle Cloud Always Free Tier (gratuito permanente)</td><td>0,00</td><td>Oracle (2026)</td></tr>
+                <tr><td>Domínio e certificado SSL</td><td>Subdomínio is-a.dev + Let's Encrypt (gratuitos)</td><td>0,00</td><td>is-a.dev (2026)</td></tr>
+                <tr><td>Identidade visual e site</td><td>Desenvolvidos internamente pelos sócios</td><td>0,00</td><td>Autoria dos sócios</td></tr>
+                <tr class="total"><td colspan="2">TOTAL</td><td>6.422,05</td><td>—</td></tr>
+            </tbody>
+        </table>
+        <span class="fonte">Fonte: elaborado pelos autores com base nas fontes citadas (2026).</span>
+
+        <h3>4. Capital de giro</h3>
+        <p>Capital de giro é a reserva financeira destinada à sustentação dos custos operacionais dos primeiros 3 (três) meses de atividade, período durante o qual a receita ainda se encontra abaixo do ponto de equilíbrio. Foi adotado pró-labore equivalente a 1 (um) salário mínimo nacional por sócio — R$ 1.621,00 — configurando o menor valor legalmente admissível para pró-labore, nos termos da Lei nº 8.212/91. Sobre cada pró-labore incide 11% a título de INSS retido na fonte (R$ 178,31 por sócio). Por estar enquadrada no Anexo III via Fator R, a empresa fica desobrigada do recolhimento da cota patronal de 20%, já inclusa no DAS. A composição do capital de giro é demonstrada na Tabela 3.</p>
+        <p><strong>Tabela 3 — Capital de giro mensal e trimestral</strong></p>
+        <table>
+            <thead><tr><th>Item</th><th>Mensal (R$)</th><th>3 meses (R$)</th><th>Fonte</th></tr></thead>
+            <tbody>
+                <tr><td>Pró-labore (2 × R$ 1.621,00)</td><td>3.242,00</td><td>9.726,00</td><td>Planalto (2025)</td></tr>
+                <tr><td>INSS retido (11% × 2 sócios)</td><td>356,62</td><td>1.069,86</td><td>Contabilizei (2026)</td></tr>
+                <tr><td>Honorários contábeis</td><td>280,00</td><td>840,00</td><td>Agilize (2026)</td></tr>
+                <tr><td>DAS Simples Nacional (~6% sobre receita)</td><td>300,00</td><td>900,00</td><td>Contabilizei (2026)</td></tr>
+                <tr><td>Energia elétrica (2 home offices)</td><td>100,00</td><td>300,00</td><td>CPFL Paulista (2026)</td></tr>
+                <tr><td>Marketing digital</td><td>400,00</td><td>1.200,00</td><td>witu.digital (2026)</td></tr>
+                <tr><td>Deslocamento regional</td><td>150,00</td><td>450,00</td><td>Estimativa dos autores</td></tr>
+                <tr><td>Reserva para imprevistos</td><td>100,00</td><td>300,00</td><td>Boa prática financeira</td></tr>
+                <tr class="total"><td>TOTAL</td><td>4.928,62</td><td>14.785,86</td><td>—</td></tr>
+            </tbody>
+        </table>
+        <span class="fonte">Fonte: elaborado pelos autores com base nas fontes citadas (2026).</span>
+
+        <h3>5. Estoque inicial</h3>
+        <p>A Konectx atua como empresa de desenvolvimento de software e prestação de serviços de inteligência artificial (CNAE 6201-5/01 e 6202-3/00), não havendo, portanto, estoque físico de mercadorias. Os ativos digitais empregados na operação — modelo de IA com acurácia de 98,9%, instalador desktop do Kinetix Slides, servidor de relay, dataset próprio e material comercial — foram integralmente desenvolvidos pelos sócios em período anterior à constituição da empresa, configurando capital intelectual integralizado no contrato social. Conclui-se, assim, que o custo do estoque inicial é igual a R$ 0,00.</p>
+
+        <h3>6. Investimento total para iniciar a operação</h3>
+        <p>A soma dos três componentes anteriores — investimento fixo, capital de giro de três meses e estoque inicial — resulta no aporte total necessário para iniciar a operação, conforme demonstrado na Tabela 4.</p>
+        <p><strong>Tabela 4 — Investimento total necessário para início da operação</strong></p>
+        <table>
+            <thead><tr><th>Componente</th><th>Valor (R$)</th></tr></thead>
+            <tbody>
+                <tr><td>Investimento Fixo</td><td>6.422,05</td></tr>
+                <tr><td>Capital de Giro (3 meses)</td><td>14.785,86</td></tr>
+                <tr><td>Estoque Inicial</td><td>0,00</td></tr>
+                <tr class="total"><td>INVESTIMENTO TOTAL</td><td>21.207,91</td></tr>
+                <tr><td>Aporte por sócio (2 sócios)</td><td>10.603,96</td></tr>
+            </tbody>
+        </table>
+        <span class="fonte">Fonte: elaborado pelos autores (2026).</span>
+
+        <h3>7. Custos fixos e variáveis</h3>
+        <h5>7.1 Custos fixos mensais</h5>
+        <p>O pró-labore compõe os custos fixos uma vez que os 2 sócios prestam serviço operacional à empresa; a ausência de pagamento configuraria irregularidade previdenciária.</p>
+        <p><strong>Tabela 5 — Custos fixos mensais</strong></p>
+        <table>
+            <thead><tr><th>Item</th><th>Valor mensal (R$)</th><th>Fonte</th></tr></thead>
+            <tbody>
+                <tr><td>Pró-labore (2 × R$ 1.621,00)</td><td>3.242,00</td><td>Planalto (2025)</td></tr>
+                <tr><td>INSS retido sobre pró-labore</td><td>356,62</td><td>Contabilizei (2026)</td></tr>
+                <tr><td>Honorários contábeis</td><td>280,00</td><td>ASSCON (2026)</td></tr>
+                <tr><td>Energia elétrica</td><td>100,00</td><td>CPFL Paulista (2026)</td></tr>
+                <tr><td>Servidor, domínio e SSL</td><td>0,00</td><td>Oracle / is-a.dev / Let's Encrypt</td></tr>
+                <tr class="total"><td>TOTAL CUSTOS FIXOS</td><td>3.978,62</td><td>—</td></tr>
+            </tbody>
+        </table>
+        <span class="fonte">Fonte: elaborado pelos autores (2026).</span>
+
+        <h5>7.2 Custos variáveis</h5>
+        <p>Os custos variáveis flutuam conforme a atividade comercial. A alíquota efetiva do Simples Nacional inicia em 6% (Anexo III, 1ª faixa, RBT12 até R$ 180 mil/ano) e progride conforme o faturamento se eleva.</p>
+        <p><strong>Tabela 6 — Custos variáveis</strong></p>
+        <table>
+            <thead><tr><th>Item</th><th>Referência</th><th>Fonte</th></tr></thead>
+            <tbody>
+                <tr><td>Simples Nacional — DAS (Anexo III)</td><td>6,00% sobre faturamento (1ª faixa)</td><td>Contabilizei (2026)</td></tr>
+                <tr><td>Marketing digital — CPL B2B</td><td>R$ 60 a R$ 280 por lead (Tech/SaaS)</td><td>witu.digital (2026)</td></tr>
+                <tr><td>CPM Meta Ads (Instagram/Facebook)</td><td>R$ 8 a R$ 35 por mil impressões</td><td>Atrio Marketing (2026)</td></tr>
+                <tr><td>Comissão sobre indicação</td><td>10% a 15% sobre venda fechada</td><td>Prática de mercado</td></tr>
+                <tr><td>Deslocamento para reunião presencial</td><td>R$ 50 a R$ 150 por visita</td><td>Estimativa — combustível regional</td></tr>
+                <tr><td>Comissões de cartão</td><td>~2,99% (débito) / ~4,19% (crédito à vista)</td><td>Média de adquirentes (2026)</td></tr>
+            </tbody>
+        </table>
+        <span class="fonte">Fonte: elaborado pelos autores com base nas fontes citadas (2026).</span>
+
+        <h3>8. Projeção de vendas e receitas (12 meses)</h3>
+        <p>As projeções de receita foram construídas considerando os contatos regionais dos 2 (dois) sócios em Taquaritinga, Ribeirão Preto, Araraquara, São Carlos e Franca, abrangendo os setores sucroalcooleiro, agroindústria, metalurgia, comércio varejista e instituições de ensino. A região concentra aproximadamente 700 indústrias e mais de 30 mil PMEs em atividade, o que sustenta não apenas a venda de produtos SaaS próprios, mas também a prestação de serviços sob demanda em IA — chatbots, visão computacional, automação de processos e detecção de pragas no agronegócio.</p>
+        <p><strong>Tabela 7 — Portfólio de produtos e serviços da Konectx</strong></p>
+        <table>
+            <thead><tr><th>Produto / Serviço</th><th>Descrição</th><th>Preço de referência</th></tr></thead>
+            <tbody>
+                <tr><td>Kinetix Slides Premium</td><td>Controle de apresentações por gesto via smartwatch (SaaS)</td><td>R$ 29,90/mês</td></tr>
+                <tr><td>Consultoria em IA</td><td>Chatbots, automação, visão computacional e integrações</td><td>R$ 3.000 a R$ 10.000/projeto</td></tr>
+                <tr><td>Kinetix Guard</td><td>Detecção de EPIs por câmera</td><td>R$ 249,90/mês/câmera</td></tr>
+                <tr><td>Agrishield (em desenvolvimento)</td><td>Detecção de pragas em lavouras</td><td>R$ 499,00/mês/talhão</td></tr>
+            </tbody>
+        </table>
+        <span class="fonte">Fonte: elaborado pelos autores (2026).</span>
+
+        <h5>8.1 Cenário pessimista</h5>
+        <p>Premissa: baixa conversão de contatos, marketing sem tração significativa, fechamento de 1 (um) projeto de consultoria por trimestre, adoção lenta do Kinetix Slides e nenhum contrato fechado para o Kinetix Guard. Trata-se de cenário típico de empresa de IA nascente sem estruturação de processo comercial.</p>
+        <p><strong>Tabela 8 — Projeção de receita: cenário pessimista</strong></p>
+        <table>
+            <thead><tr><th>Período</th><th>Slides</th><th>Consultoria</th><th>Guard</th><th>Receita/mês (R$)</th></tr></thead>
+            <tbody>
+                <tr><td>Mês 1-3</td><td>0</td><td>1 proj. de R$ 2.500/trim.</td><td>0</td><td>833</td></tr>
+                <tr><td>Mês 4-6</td><td>3</td><td>1 proj. de R$ 3.500/trim.</td><td>0</td><td>1.256</td></tr>
+                <tr><td>Mês 7-9</td><td>6</td><td>2 proj. de R$ 4.000/trim.</td><td>1</td><td>2.262</td></tr>
+                <tr><td>Mês 10-12</td><td>10</td><td>2 proj. de R$ 4.000/trim.</td><td>1</td><td>3.215</td></tr>
+            </tbody>
+        </table>
+        <span class="fonte">Fonte: elaborado pelos autores (2026).</span>
+        <p>Receita anual projetada: R$ 22.700,00. Considerando-se custos fixos anuais de R$ 47.743,44, o cenário resulta em déficit de aproximadamente R$ 25.043,44. Como medida de mitigação, o contrato social prevê cláusula de redução do pró-labore a R$ 800,00 por sócio caso a receita mensal permaneça inferior a R$ 3.000,00 por 3 (três) meses consecutivos, o que reduz o custo fixo mensal para aproximadamente R$ 2.295,00.</p>
+
+        <h5>8.2 Cenário realista</h5>
+        <p>Premissa: os contatos regionais convertem 2 a 4 projetos de consultoria por trimestre a partir do 2º trimestre, com presença em eventos da região. Os 2 (dois) sócios atuam como canais comerciais simultâneos. O Kinetix Guard fecha contrato com 6 câmeras ao longo do ano.</p>
+        <p><strong>Tabela 9 — Projeção de receita: cenário realista</strong></p>
+        <table>
+            <thead><tr><th>Período</th><th>Slides</th><th>Consultoria</th><th>Guard</th><th>Receita/mês (R$)</th></tr></thead>
+            <tbody>
+                <tr><td>Mês 1-3</td><td>5</td><td>2 proj. de R$ 4.000</td><td>0</td><td>2.816</td></tr>
+                <tr><td>Mês 4-6</td><td>10</td><td>2 proj. de R$ 5.000</td><td>2</td><td>4.099</td></tr>
+                <tr><td>Mês 7-9</td><td>20</td><td>3 proj. de R$ 6.000</td><td>4</td><td>6.597</td></tr>
+                <tr><td>Mês 10-12</td><td>30</td><td>4 proj. de R$ 7.000</td><td>6</td><td>9.296</td></tr>
+            </tbody>
+        </table>
+        <span class="fonte">Fonte: elaborado pelos autores (2026).</span>
+        <p>Receita anual projetada: R$ 68.424,00. Considerando-se custos fixos anuais de R$ 47.743,44, o lucro bruto é de aproximadamente R$ 20.680,56. Descontando-se o DAS do Simples Nacional (~6% efetivo, R$ 4.105,44), estima-se lucro líquido de R$ 16.575,12 ao final do primeiro ano.</p>
+
+        <h5>8.3 Cenário otimista</h5>
+        <p>Premissa: parceria com rede de escolas e universidades para distribuição do Kinetix Slides, fluxo contínuo de projetos de IA via indicação, fechamento do Kinetix Guard com 1 ou 2 indústrias maiores (8 a 14 câmeras) e consultoria escalando por reputação.</p>
+        <p><strong>Tabela 10 — Projeção de receita: cenário otimista</strong></p>
+        <table>
+            <thead><tr><th>Período</th><th>Slides</th><th>Consultoria</th><th>Guard</th><th>Receita/mês (R$)</th></tr></thead>
+            <tbody>
+                <tr><td>Mês 1-3</td><td>8</td><td>2 proj. de R$ 5.000</td><td>1</td><td>3.823</td></tr>
+                <tr><td>Mês 4-6</td><td>20</td><td>3 proj. de R$ 6.000</td><td>4</td><td>7.598</td></tr>
+                <tr><td>Mês 7-9</td><td>40</td><td>4 proj. de R$ 7.000</td><td>8</td><td>11.795</td></tr>
+                <tr><td>Mês 10-12</td><td>60</td><td>5 proj. de R$ 8.000</td><td>12</td><td>16.792</td></tr>
+            </tbody>
+        </table>
+        <span class="fonte">Fonte: elaborado pelos autores (2026).</span>
+        <p>Receita anual projetada: R$ 120.024,00. Considerando-se custos fixos anuais de R$ 47.743,44, o lucro bruto é de R$ 72.280,56. Descontando-se o DAS (~6% efetivo, R$ 7.201,44), o lucro líquido estimado é de R$ 65.079,12. Neste cenário, torna-se viável reajustar o pró-labore para R$ 3.000,00 a R$ 4.000,00 por sócio a partir do segundo semestre, mantendo-se ainda o Fator R acima de 28%.</p>
+
+        <h5>8.4 Consolidação dos cenários</h5>
+        <p><strong>Tabela 11 — Consolidação dos três cenários projetados</strong></p>
+        <table>
+            <thead><tr><th>Cenário</th><th>Receita anual (R$)</th><th>Lucro líquido (R$)</th><th>Lucratividade</th></tr></thead>
+            <tbody>
+                <tr><td>Pessimista</td><td>22.700,00</td><td>(25.043,44)</td><td>Negativa</td></tr>
+                <tr><td>Realista</td><td>68.424,00</td><td>16.575,12</td><td>24,2%</td></tr>
+                <tr><td>Otimista</td><td>120.024,00</td><td>65.079,12</td><td>54,2%</td></tr>
+            </tbody>
+        </table>
+        <span class="fonte">Fonte: elaborado pelos autores (2026).</span>
+
+        <h3>9. Ponto de equilíbrio (Break-Even)</h3>
+        <p>O Ponto de Equilíbrio corresponde à receita mensal mínima necessária para que a empresa cubra a totalidade de seus custos fixos e variáveis, sem gerar prejuízo ou lucro (resultado líquido igual a zero). É calculado pela seguinte fórmula:</p>
+        <p><em>Break-Even = Custos Fixos ÷ (1 − Custos Variáveis%)</em></p>
+        <p>Aplicando-se os valores apurados na seção anterior:</p>
+        <p><em>Break-Even = R$ 3.978,62 ÷ (1 − 0,06) = R$ 3.978,62 ÷ 0,94 = R$ 4.232,57/mês</em></p>
+        <p>Em outras palavras, a Konectx precisa faturar pelo menos R$ 4.232,57 por mês para cobrir todos os seus custos. Algumas combinações de produtos e serviços que atingem o ponto de equilíbrio mensal são apresentadas na Tabela 12.</p>
+        <p><strong>Tabela 12 — Combinações de receita que atingem o ponto de equilíbrio</strong></p>
+        <table>
+            <thead><tr><th>Combinação</th><th>Receita estimada (R$)</th></tr></thead>
+            <tbody>
+                <tr><td>1 projeto de consultoria R$ 4.000 + 10 assinantes Slides</td><td>4.299,00</td></tr>
+                <tr><td>1 projeto de consultoria R$ 3.500 + 3 câmeras Guard</td><td>4.249,70</td></tr>
+                <tr><td>17 câmeras Guard ativas (apenas SaaS)</td><td>4.248,30</td></tr>
+                <tr><td>2 projetos de R$ 2.500 cada (sem SaaS)</td><td>5.000,00</td></tr>
+            </tbody>
+        </table>
+        <span class="fonte">Fonte: elaborado pelos autores (2026).</span>
+        <p>No cenário realista, o ponto de equilíbrio é atingido a partir do 4º mês de operação. No cenário otimista, já no 1º mês. No cenário pessimista, o equilíbrio só é atingido no 12º mês, o que aciona o gatilho de redução do pró-labore previsto no contrato social.</p>
+
+        <h3>10. Lucratividade</h3>
+        <p>A lucratividade mede o percentual da receita bruta que se converte em lucro líquido após a dedução de custos fixos, variáveis e impostos. Constitui indicador essencial de saúde financeira e é obtida pela fórmula:</p>
+        <p><em>Lucratividade = (Lucro Líquido ÷ Receita Bruta) × 100</em></p>
+        <p><strong>Tabela 13 — Indicador de lucratividade por cenário</strong></p>
+        <table>
+            <thead><tr><th>Cenário</th><th>Receita anual (R$)</th><th>Lucro líquido (R$)</th><th>Lucratividade</th></tr></thead>
+            <tbody>
+                <tr><td>Pessimista</td><td>22.700,00</td><td>(25.043,44)</td><td>−110,3% (prejuízo)</td></tr>
+                <tr><td>Realista</td><td>68.424,00</td><td>16.575,12</td><td>24,2%</td></tr>
+                <tr><td>Otimista</td><td>120.024,00</td><td>65.079,12</td><td>54,2%</td></tr>
+            </tbody>
+        </table>
+        <span class="fonte">Fonte: elaborado pelos autores (2026).</span>
+        <p>A lucratividade de 24,2% no cenário realista é considerada saudável para uma empresa de tecnologia em seu primeiro ano de operação, situando-se acima do benchmark do setor SaaS no Brasil (10% a 20% no primeiro ano, conforme referências do Sebrae). No cenário otimista, a lucratividade de 54,2% reflete a vantagem estrutural de uma empresa de software: o custo marginal de uma nova venda é próximo de zero, especialmente nos produtos SaaS, em que uma nova assinatura não gera custo de produção adicional.</p>
+
+        <h3>11. Retorno sobre o investimento (ROI)</h3>
+        <p>O Retorno sobre o Investimento (ROI) mensura quanto do capital aportado se converte em lucro ao longo de um período determinado. É indicador-chave para a tomada de decisão dos sócios quanto ao aporte inicial. É obtido pela fórmula:</p>
+        <p><em>ROI = (Lucro Líquido ÷ Investimento Total) × 100</em></p>
+        <p>Considerando o investimento total de R$ 21.207,91, o ROI projetado em 12 meses para cada um dos cenários é demonstrado na Tabela 14, juntamente com o respectivo Payback.</p>
+        <p><strong>Tabela 14 — ROI e Payback projetados em 12 meses</strong></p>
+        <table>
+            <thead><tr><th>Cenário</th><th>Lucro líquido (R$)</th><th>ROI 12 meses</th><th>Payback</th></tr></thead>
+            <tbody>
+                <tr><td>Pessimista</td><td>(25.043,44)</td><td>−118,1%</td><td>Não atingido</td></tr>
+                <tr><td>Realista</td><td>16.575,12</td><td>78,2%</td><td>Aproximadamente 8 meses</td></tr>
+                <tr><td>Otimista</td><td>65.079,12</td><td>306,9%</td><td>Aproximadamente 3 meses</td></tr>
+            </tbody>
+        </table>
+        <span class="fonte">Fonte: elaborado pelos autores (2026).</span>
+        <p>No cenário realista, o ROI de 78,2% significa que cada R$ 1,00 investido pelos sócios retorna R$ 1,78 ao longo do primeiro ano de operação. O payback estimado em aproximadamente 8 meses demonstra a capacidade da empresa de se autossustentar rapidamente.</p>
+        <p>No cenário otimista, o ROI de 306,9% indica que cada R$ 1,00 investido retorna R$ 4,07 no mesmo período, com payback inferior a 3 meses. Tal patamar de retorno é característico de empresas SaaS bem-sucedidas, em que o baixo custo de aquisição de clientes (CAC) combinado com alto valor vitalício do cliente (LTV) potencializa a rentabilidade.</p>
+
+        <h3>12. Estratégia dos sócios e responsabilidades</h3>
+        <p>A constituição da Konectx com 2 (dois) sócios apresenta um equilíbrio favorável entre risco e capacidade operacional. Pelo lado dos custos, o pró-labore mínimo conjunto (R$ 3.242,00) eleva o ponto de equilíbrio mensal para R$ 4.232,57, valor consideravelmente inferior ao que seria observado em estruturas com maior número de sócios. Cada novo sócio acrescentaria aproximadamente R$ 1.799,31 ao custo fixo mensal (R$ 1.621,00 de salário mínimo somados a R$ 178,31 de INSS retido).</p>
+        <p>Pelo lado comercial, a empresa conta com 2 (dois) canais simultâneos de venda, cada qual ativando sua própria rede de contatos regional. Considerando-se que a maioria dos contratos B2B na região de Ribeirão Preto e cidades vizinhas é firmada por indicação e não por tráfego pago, o capital relacional dos sócios constitui o principal ativo da empresa em seu primeiro ano de operação.</p>
+        <p>Os contatos dos sócios em metalurgias, usinas sucroalcooleiras, agroindústrias e instituições de ensino abrem espaço para projetos sob demanda de inteligência artificial — chatbots integrados ao WhatsApp, automação RPA, visão computacional para fiscalização de EPI e detecção de pragas no agronegócio — que não dependem da escala dos produtos SaaS para gerar receita. Estima-se que cada sócio possa encerrar de 1 a 2 projetos por trimestre, acrescentando R$ 1.500,00 a R$ 3.000,00 mensais em receita média ao caixa da empresa.</p>
+        <p>Em razão do uso dos notebooks pessoais dos sócios na operação (desenvolvimento, atendimento e demonstração comercial), o contrato social estabelece que a empresa responderá pela substituição do equipamento em caso de falha decorrente do uso operacional. O fundo de reposição de equipamentos contemplado no investimento fixo (R$ 3.000,00) cobre aproximadamente a substituição de meia unidade de notebook intermediário (Lenovo LOQ com preço de mercado em torno de R$ 6.949,00 em 2026, segundo referência de mercado) e deverá ser recomposto trimestralmente a partir da superação do ponto de equilíbrio.</p>
+
+        <h3>13. Resumo executivo</h3>
+        <p>A Tabela 15 consolida os principais indicadores financeiros do presente relatório.</p>
+        <p><strong>Tabela 15 — Quadro consolidado de indicadores financeiros</strong></p>
+        <table>
+            <thead><tr><th>Indicador</th><th>Valor</th></tr></thead>
+            <tbody>
+                <tr><td>Quantidade de sócios</td><td>2</td></tr>
+                <tr><td>Forma jurídica</td><td>LTDA — Simples Nacional, Anexo III via Fator R</td></tr>
+                <tr><td>Pró-labore por sócio (1 SM 2026)</td><td>R$ 1.621,00</td></tr>
+                <tr><td>INSS retido por sócio</td><td>R$ 178,31 (11%)</td></tr>
+                <tr><td>Investimento fixo</td><td>R$ 6.422,05</td></tr>
+                <tr><td>Capital de giro (3 meses)</td><td>R$ 14.785,86</td></tr>
+                <tr><td>Estoque inicial</td><td>R$ 0,00</td></tr>
+                <tr><td>Investimento total inicial</td><td>R$ 21.207,91</td></tr>
+                <tr><td>Aporte por sócio</td><td>R$ 10.603,96</td></tr>
+                <tr><td>Custo fixo mensal</td><td>R$ 3.978,62</td></tr>
+                <tr><td>Alíquota inicial Simples Nacional (Anexo III)</td><td>6,00%</td></tr>
+                <tr><td>Ponto de equilíbrio mensal</td><td>R$ 4.232,57</td></tr>
+                <tr><td>Receita anual — cenário pessimista</td><td>R$ 22.700,00 (déficit)</td></tr>
+                <tr><td>Receita anual — cenário realista</td><td>R$ 68.424,00</td></tr>
+                <tr><td>Receita anual — cenário otimista</td><td>R$ 120.024,00</td></tr>
+                <tr><td>Lucratividade cenário realista</td><td>24,2%</td></tr>
+                <tr><td>ROI cenário realista (12 meses)</td><td>78,2%</td></tr>
+                <tr><td>Payback cenário realista</td><td>Aproximadamente 8 meses</td></tr>
+            </tbody>
+        </table>
+        <span class="fonte">Fonte: elaborado pelos autores (2026).</span>
+
+        <h3>14. Considerações finais</h3>
+        <p>A Konectx apresenta viabilidade financeira positiva nos cenários realista e otimista, com retorno do investimento entre 78,2% e 306,9% no primeiro ano de operação. O custo operacional praticamente nulo da infraestrutura — obtido por meio do Oracle Cloud Always Free, do serviço is-a.dev e do Let's Encrypt, todos permanentemente gratuitos — constitui o principal diferencial competitivo, permitindo que a maior parte da receita seja convertida em margem operacional.</p>
+        <p>O principal risco identificado é o cenário pessimista, no qual o pró-labore dos 2 (dois) sócios consome mais recursos do que a receita gera. Para mitigar esse risco, o contrato social prevê cláusula de gatilho que reduz o pró-labore a R$ 800,00 por sócio caso a receita mensal permaneça inferior a R$ 3.000,00 por 3 (três) meses consecutivos. Com a redução, o custo fixo mensal cai para aproximadamente R$ 2.295,00 e o ponto de equilíbrio reduz-se a R$ 2.441,49 — patamar facilmente atingido com apenas 1 (um) projeto de consultoria por mês.</p>
+        <p>Considerando-se o aporte por sócio de R$ 10.603,96 e os 12 meses de pista financeira proporcionados pelo capital de giro, conclui-se que a estrutura financeira proposta permite a validação do produto e da base de clientes com risco moderado e controlado. A partir do ponto de equilíbrio, recomenda-se o reinvestimento do lucro em marketing digital, contratação de estagiários — o que mantém o enquadramento no Anexo III por meio do Fator R — e expansão do portfólio para os segmentos de segurança industrial e agronegócio.</p>
+
+        <h3>Referências</h3>
+        <p>Listam-se a seguir, em ordem alfabética, as referências consultadas para a elaboração do presente relatório.</p>
+        <div class="ref-list">
+            <p>AGILIZE. <em>Quanto custa a contabilidade online?</em> 2026. Disponível em: <a href="https://agilize.com.br/blog/gestao-contabil-e-fiscal/contabilidade-online-preco/" target="_blank" rel="noopener">https://agilize.com.br/blog/gestao-contabil-e-fiscal/contabilidade-online-preco/</a>. Acesso em: 26 maio 2026.</p>
+            <p>AGILIZE. <em>Tabela do Simples Nacional 2026: anexos e alíquotas.</em> 2026. Disponível em: <a href="https://agilize.com.br/blog/gestao-contabil-e-fiscal/anexos-do-simples-nacional/" target="_blank" rel="noopener">https://agilize.com.br/blog/gestao-contabil-e-fiscal/anexos-do-simples-nacional/</a>. Acesso em: 26 maio 2026.</p>
+            <p>AGÊNCIA BRASIL. <em>Salário mínimo de R$ 1.621 começa a ser pago nesta segunda.</em> Brasília, 2026. Disponível em: <a href="https://agenciabrasil.ebc.com.br/economia/noticia/2026-02/salario-minimo-de-r-1621-comeca-ser-pago-nesta-segunda" target="_blank" rel="noopener">https://agenciabrasil.ebc.com.br/economia/noticia/2026-02/salario-minimo-de-r-1621-comeca-ser-pago-nesta-segunda</a>. Acesso em: 26 maio 2026.</p>
+            <p>AGÊNCIA SP. <em>Governo de SP propõe salário mínimo paulista de R$ 1.874, com alta de 46% em 4 anos.</em> São Paulo, 2026. Disponível em: <a href="https://www.agenciasp.sp.gov.br/governo-de-sp-propoe-salario-minimo-paulista-de-r-1-874-com-alta-de-46-em-4-anos/" target="_blank" rel="noopener">https://www.agenciasp.sp.gov.br/governo-de-sp-propoe-salario-minimo-paulista-de-r-1-874-com-alta-de-46-em-4-anos/</a>. Acesso em: 26 maio 2026.</p>
+            <p>AINTEGRARE. <em>Quanto custa tráfego pago em 2026: Google Ads, Meta Ads e investimento real.</em> 2026. Disponível em: <a href="https://aintegrare.com.br/quanto-custa-trafego-pago" target="_blank" rel="noopener">https://aintegrare.com.br/quanto-custa-trafego-pago</a>. Acesso em: 26 maio 2026.</p>
+            <p>ANEEL. <em>ANEEL aprova novas tarifas para a CPFL Paulista.</em> Brasília, 2026. Disponível em: <a href="https://www.gov.br/aneel/pt-br/assuntos/noticias/2026/aneel-aprova-novas-tarifas-para-a-cpfl-paulista" target="_blank" rel="noopener">https://www.gov.br/aneel/pt-br/assuntos/noticias/2026/aneel-aprova-novas-tarifas-para-a-cpfl-paulista</a>. Acesso em: 26 maio 2026.</p>
+            <p>ASSCON. <em>Tabela de Honorários Contábeis 2026.</em> 2026. Disponível em: <a href="https://novo.asscon.org.br/tabela-de-honorarios-contabeis-2026/" target="_blank" rel="noopener">https://novo.asscon.org.br/tabela-de-honorarios-contabeis-2026/</a>. Acesso em: 26 maio 2026.</p>
+            <p>ATRIO MARKETING. <em>Quanto custa anunciar no Google e Meta Ads em 2026.</em> 2026. Disponível em: <a href="https://atriomarketing.site/blog/quanto-custa-anunciar-google-meta-ads" target="_blank" rel="noopener">https://atriomarketing.site/blog/quanto-custa-anunciar-google-meta-ads</a>. Acesso em: 26 maio 2026.</p>
+            <p>BRASIL. <em>Decreto nº 12.797, de 30 de dezembro de 2025.</em> Dispõe sobre o salário mínimo a partir de 1º de janeiro de 2026. Brasília, 2025. Disponível em: <a href="https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/decreto/d12797.htm" target="_blank" rel="noopener">https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/decreto/d12797.htm</a>. Acesso em: 26 maio 2026.</p>
+            <p>BUSCAPÉ. <em>Notebook para engenharia de software: 5 melhores em 2026.</em> 2026. Disponível em: <a href="https://www.buscape.com.br/notebook/conteudo/notebook-para-engenharia-de-software" target="_blank" rel="noopener">https://www.buscape.com.br/notebook/conteudo/notebook-para-engenharia-de-software</a>. Acesso em: 26 maio 2026.</p>
+            <p>BUSQA. <em>Samsung Galaxy Watch 6: ficha técnica e preços.</em> 2026. Disponível em: <a href="https://busqa.com.br/produto/samsung-galaxy-watch-6/" target="_blank" rel="noopener">https://busqa.com.br/produto/samsung-galaxy-watch-6/</a>. Acesso em: 26 maio 2026.</p>
+            <p>C6 BANK. <em>Salário mínimo paulista 2026: valor, vigência e quem tem direito.</em> 2026. Disponível em: <a href="https://www.c6bank.com.br/blog/salario-minimo-paulista" target="_blank" rel="noopener">https://www.c6bank.com.br/blog/salario-minimo-paulista</a>. Acesso em: 26 maio 2026.</p>
+            <p>CERTISIGN. <em>Certificado digital A1 e A3 para CPF, CNPJ, OAB.</em> 2026. Disponível em: <a href="https://certisign.com.br/certificados" target="_blank" rel="noopener">https://certisign.com.br/certificados</a>. Acesso em: 26 maio 2026.</p>
+            <p>CONTABILIZEI. <em>Anexo III Simples Nacional: tabela completa de 2026.</em> 2026. Disponível em: <a href="https://www.contabilizei.com.br/contabilidade-online/anexo-3-simples-nacional/" target="_blank" rel="noopener">https://www.contabilizei.com.br/contabilidade-online/anexo-3-simples-nacional/</a>. Acesso em: 26 maio 2026.</p>
+            <p>CONTABILIZEI. <em>INSS pró-labore 2026: tabelas, teto e como calcular.</em> 2026. Disponível em: <a href="https://www.contabilizei.com.br/contabilidade-online/inss-pro-labore/" target="_blank" rel="noopener">https://www.contabilizei.com.br/contabilidade-online/inss-pro-labore/</a>. Acesso em: 26 maio 2026.</p>
+            <p>CONTABILIZEI. <em>Quanto custa um contador? Preços de contabilidade.</em> 2026. Disponível em: <a href="https://www.contabilizei.com.br/contabilidade-online/servicos-de-contabilidade-precos/" target="_blank" rel="noopener">https://www.contabilizei.com.br/contabilidade-online/servicos-de-contabilidade-precos/</a>. Acesso em: 26 maio 2026.</p>
+            <p>CONTAJA. <em>Quanto custa abrir empresa e ter um CNPJ em 2026.</em> 2026. Disponível em: <a href="https://contaja.com.br/blog/quanto-custa-abrir-empresa/" target="_blank" rel="noopener">https://contaja.com.br/blog/quanto-custa-abrir-empresa/</a>. Acesso em: 26 maio 2026.</p>
+            <p>CPFL ENERGIA. <em>Tarifa Paulista 2026.</em> 2026. Disponível em: <a href="https://www.cpfl.com.br/tarifa-paulista-2026" target="_blank" rel="noopener">https://www.cpfl.com.br/tarifa-paulista-2026</a>. Acesso em: 26 maio 2026.</p>
+            <p>E-SIMPLES AUDITORIA. <em>Anexo III do Simples Nacional: guia completo e atualizado 2026.</em> 2026. Disponível em: <a href="https://blog.esimplesauditoria.com.br/anexo-3-do-simples-nacional/" target="_blank" rel="noopener">https://blog.esimplesauditoria.com.br/anexo-3-do-simples-nacional/</a>. Acesso em: 26 maio 2026.</p>
+            <p>ENEL. <em>Valor kWh Enel SP 2026 — Residencial.</em> 2026. Disponível em: <a href="https://calculadoraenergia.com.br/tarifa/enel-sp" target="_blank" rel="noopener">https://calculadoraenergia.com.br/tarifa/enel-sp</a>. Acesso em: 26 maio 2026.</p>
+            <p>IS-A.DEV. <em>Cool subdomains for developers.</em> 2026. Disponível em: <a href="https://www.is-a.dev/" target="_blank" rel="noopener">https://www.is-a.dev/</a>. Acesso em: 26 maio 2026.</p>
+            <p>JUCESP. <em>Portaria nº 146 — Tabela de Preços 2026.</em> 2026. Disponível em: <a href="https://www.institucional.jucesp.sp.gov.br/downloads/Portaria%20n%C2%BA%20146%20-%20Tabela%20de%20Pre%C3%A7os%202026.pdf" target="_blank" rel="noopener">https://www.institucional.jucesp.sp.gov.br/downloads/Portaria%20n%C2%BA%20146%20-%20Tabela%20de%20Pre%C3%A7os%202026.pdf</a>. Acesso em: 26 maio 2026.</p>
+            <p>LET'S ENCRYPT. <em>Free, automated, and open Certificate Authority.</em> 2026. Disponível em: <a href="https://letsencrypt.org/" target="_blank" rel="noopener">https://letsencrypt.org/</a>. Acesso em: 26 maio 2026.</p>
+            <p>MEU CONTADOR ONLINE. <em>Quanto custa abrir empresa em São Paulo em 2026.</em> 2026. Disponível em: <a href="https://www.meucontadoronline.com.br/blog/quanto-custa-abrir-empresa-em-sao-paulo/" target="_blank" rel="noopener">https://www.meucontadoronline.com.br/blog/quanto-custa-abrir-empresa-em-sao-paulo/</a>. Acesso em: 26 maio 2026.</p>
+            <p>OMIE. <em>Qual é o valor do certificado digital A1 e A3 em 2026.</em> 2026. Disponível em: <a href="https://www.omie.com.br/blog/qual-e-o-valor-do-certificado-digital-a1-e-a3-em-2026/" target="_blank" rel="noopener">https://www.omie.com.br/blog/qual-e-o-valor-do-certificado-digital-a1-e-a3-em-2026/</a>. Acesso em: 26 maio 2026.</p>
+            <p>ORACLE. <em>Oracle Cloud Free Tier.</em> 2026. Disponível em: <a href="https://www.oracle.com/br/cloud/free/" target="_blank" rel="noopener">https://www.oracle.com/br/cloud/free/</a>. Acesso em: 26 maio 2026.</p>
+            <p>REDESIM. <em>Portal Empresas e Negócios — Balcão Único.</em> 2026. Disponível em: <a href="https://www.gov.br/empresas-e-negocios/pt-br/redesim" target="_blank" rel="noopener">https://www.gov.br/empresas-e-negocios/pt-br/redesim</a>. Acesso em: 26 maio 2026.</p>
+            <p>SAMSUNG BRASIL. <em>Galaxy Watch: seu novo relógio com AI.</em> 2026. Disponível em: <a href="https://www.samsung.com/br/watches/galaxy-watch/" target="_blank" rel="noopener">https://www.samsung.com/br/watches/galaxy-watch/</a>. Acesso em: 26 maio 2026.</p>
+            <p>SERASA EXPERIAN. <em>Tabela INSS 2026: alíquotas e faixas de contribuição.</em> 2026. Disponível em: <a href="https://www.serasaexperian.com.br/conteudos/tabela-inss-2026/" target="_blank" rel="noopener">https://www.serasaexperian.com.br/conteudos/tabela-inss-2026/</a>. Acesso em: 26 maio 2026.</p>
+            <p>SERASA EXPERIAN. <em>e-CNPJ: descubra o que é, valores e como obter.</em> 2026. Disponível em: <a href="https://www.serasaexperian.com.br/conteudos/e-cnpj/" target="_blank" rel="noopener">https://www.serasaexperian.com.br/conteudos/e-cnpj/</a>. Acesso em: 26 maio 2026.</p>
+            <p>TECHTUDO. <em>Melhor notebook com i7: top 10 de 2026.</em> 2026. Disponível em: <a href="https://www.techtudo.com.br/listas/2026/03/melhor-notebook-com-i7-top-10-de-2026-edqualcomprarie.ghtml" target="_blank" rel="noopener">https://www.techtudo.com.br/listas/2026/03/melhor-notebook-com-i7-top-10-de-2026-edqualcomprarie.ghtml</a>. Acesso em: 26 maio 2026.</p>
+            <p>WITU DIGITAL. <em>Quanto custa Google Ads em 2026: preços por setor B2B.</em> 2026. Disponível em: <a href="https://witu.digital/quanto-custa-google-ads/" target="_blank" rel="noopener">https://witu.digital/quanto-custa-google-ads/</a>. Acesso em: 26 maio 2026.</p>
+        </div>
+    </div>
+</section>
+
 <footer>
     <div class="foot-mark">konect<span>x</span></div>
     <div class="foot-copy">2026 — Inteligência artificial aplicada</div>
@@ -176,6 +671,18 @@ function go(){var c=input.value.trim();if(c.length===6)window.location.href='/s/
 var els=document.querySelectorAll('.reveal');
 var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:0.15});
 els.forEach(function(el){obs.observe(el)});
+
+var docsTabs=document.querySelectorAll('.docs-tab');
+var docsPanels=document.querySelectorAll('.docs-panel');
+docsTabs.forEach(function(tab){
+    tab.addEventListener('click',function(){
+        var alvo=tab.getAttribute('data-tab');
+        docsTabs.forEach(function(t){t.classList.remove('active')});
+        docsPanels.forEach(function(p){p.classList.remove('active')});
+        tab.classList.add('active');
+        document.getElementById('panel-'+alvo).classList.add('active');
+    });
+});
 </script>
 </body>
 </html>
